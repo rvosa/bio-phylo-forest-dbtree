@@ -13,6 +13,7 @@ my %parms = (
     'PREREQ_PM'    => {
     	'DBIx::Class' => '0',
     	'Bio::Phylo'  => '0.52',
+    	'DBD::SQLite' => '0',
     },
     'dist'         => {
         'COMPRESS' => 'gzip -9f',

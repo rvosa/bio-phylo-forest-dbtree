@@ -7,6 +7,7 @@ Requires
 ========
 * Bio::Phylo v0.52 or later
 * DBIx::Class
+* DBD::SQLite
 
 Importing data
 ==============
