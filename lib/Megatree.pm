@@ -27,6 +27,8 @@ sub connect {
 	return $SINGLETON;
 }
 
+sub get_root { shift->resultset('Node')->find(2) }
+
 sub dbh { $DBH }
 
 sub create {
