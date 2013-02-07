@@ -2,7 +2,9 @@ package Megatree::Result::Node;
 use strict;
 use warnings;
 use Megatree;
+use Bio::Phylo::Forest::Node;
 use base 'DBIx::Class::Core';
+use base 'Bio::Phylo::Forest::Node';
 __PACKAGE__->table("node");
 
 =head1 ACCESSORS
