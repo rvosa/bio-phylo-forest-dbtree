@@ -8,6 +8,7 @@ __PACKAGE__->load_namespaces;
 use DBI;
 my $SINGLETON;
 my $DBH;
+our $VERSION = '0.1';
 
 sub connect {
 	my $class = shift;
