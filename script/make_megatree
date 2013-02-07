@@ -1,0 +1,136 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Long;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use Megatree;
+
+# process command line arguments
+my ( $infile, $dbfile );
+GetOptions(
+	'infile=s' => \$infile,
+	'dbfile=s' => \$dbfile,
+);
+die "Usage: make_megatree -i <infile> -d <dbfile>\n" if not $infile;
+
+# instantiate helper objects
+my $sth;
+if ( $dbfile ) {
+	my $dbh = Megatree->connect($dbfile)->dbh;
+	$sth = $dbh->prepare("insert into node values(?,?,?,?)");
+}
+my $idcounter = 2;
+my %idcache;
+
+# do the conversion
+my $newick = slurp($infile);
+my $labeled = label_nodes($newick);
+if ( $labeled =~ /^(.+);$/ ) {
+	my $clade = $1;
+	warn("captured outer clade, going to traverse");
+	traverse( $clade );
+}
+else {
+	die "no ; in newick: $labeled";
+}
+
+# read the provided file into a string, strip line breaks
+sub slurp {
+	my $file = shift;
+	warn("going to read file $file");
+	open my $fh, '<', $file or die $!;
+	my @lines = <$fh>;
+	chomp @lines;
+	return join '', @lines;
+}
+
+# attach new, unique labels to interior nodes
+sub label_nodes {
+	my $string = shift;
+	warn("going to label nodes");
+	
+	# strip previously existing node labels
+	$string =~ s/\)'[^']+'/\)/g;
+	$string =~ s/\)[^:\),]+/\)/g;
+	warn("stripped previous node labels");
+	
+	# apply new labels
+	my @tokens = split /\)/, $string;
+	my $line = '';
+	my $counter = 1;
+	for my $i ( 0 .. $#tokens ) {
+		$line .= $tokens[$i] . ')n' . $counter++;
+	}
+	$line .= ';';
+	warn("applied ".($counter-1)." unique interior node labels");
+	
+	return $line;
+}
+
+# recursively traverse megatree
+sub traverse {
+	my ( $tokens, $parent ) = @_;
+	no warnings 'recursion';
+	
+	# split tokens into clades, traverse
+	my ( $depth, $label, $clade, @clades ) = ( 0, '', '' );
+	for my $i ( 0 .. length($tokens) - 1 ) {
+		my $t = substr $tokens, $i, 1;
+		
+		# have completed a clade, store it
+		if ( $t eq ',' ^ $t eq ')' && $depth == 1 ) {
+			push @clades, $clade;
+			$clade = '';
+		}
+		
+		# extending clade
+		elsif ( $depth > 0 ) {
+			$clade .= $t;
+		}
+		
+		# at level zero, either the node label or at
+		# beginning of token string
+		elsif ( $depth == 0 && $t ne '(' ) {
+			$label .= $t;
+		}
+		
+		$depth++ if $t eq '(';
+		$depth-- if $t eq ')';		
+	}
+	print_branch( $label, $parent );
+	traverse( $_, $label ) for @clades;
+}
+
+# print focal branch as CSV
+sub print_branch {
+	my ( $child, $parent ) = @_;
+	if ( $parent ) {
+		$parent =~ s/:.+//;	
+		my $length = 0;
+		if ( $child =~ /(.+?):(.+)/ ) {
+			( $child, $length ) = ( $1, $2 );
+		}
+		$idcache{$child}  = $idcounter++ unless $idcache{$child};
+		$idcache{$parent} = $idcounter++ unless $idcache{$parent};	
+		doprint($idcache{$child},$idcache{$parent},$child,$length);
+	}
+	else {
+		my $length = 0;
+		if ( $child =~ /(.+?):(.+)/ ) {
+			( $child, $length ) = ( $1, $2 );
+		}		
+		$idcache{$child}  = $idcounter++ unless $idcache{$child};
+		doprint($idcache{$child},1,$child,$length);
+	}
+}
+
+sub doprint {
+	my @values = @_;
+	if ( $sth ) {
+		$sth->execute(@values);
+	}
+	else {
+		print join(',',@values), "\n";
+	}
+}
