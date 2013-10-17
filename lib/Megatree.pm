@@ -1,7 +1,9 @@
 package Megatree;
 use strict;
 use warnings;
+use Bio::Phylo::Forest::Tree;
 use base 'DBIx::Class::Schema';
+use base 'Bio::Phylo::Forest::Tree';
 
 __PACKAGE__->load_namespaces;
 
@@ -28,7 +30,9 @@ sub connect {
 	return $SINGLETON;
 }
 
-sub get_root { shift->resultset('Node')->find(2) }
+sub _rs { shift->resultset('Node') }
+
+sub get_root { shift->_rs->find(2) }
 
 sub dbh { $DBH }
 
@@ -40,6 +44,17 @@ create index parent_idx on node(parent);
 create index name_idx on node(name);
 COMMAND
 	system("echo '$command' | sqlite3 $file") == 0 or die 'Create failed!';
+}
+
+sub get_id { 0 }
+
+sub visit {
+	my ( $self, $code ) = @_;
+	my $rs = $self->_rs;
+	while( my $node = $rs->next ) {
+		$code->($node);
+	}
+	return $self;
 }
 
 1;
