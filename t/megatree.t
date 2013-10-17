@@ -9,7 +9,7 @@ use lib "$FindBin::Bin/../lib";
 use_ok('Megatree');
 
 # the dbfile holds the tree as in trivial.newick
-my $dbfile = "$FindBin::Bin/../data/trivial.db";
+my $dbfile = "$FindBin::Bin/../data/16S_candiv_gg_2011_1.db";
 
 # try to connect to the database
 my $mega = Megatree->connect($dbfile);
@@ -20,5 +20,7 @@ my $root = $mega->get_root;
 isa_ok($root, 'Bio::Phylo::Forest::Node');
 
 # now, for example
-ok($root->to_newick);
+ok($mega->calc_tree_length);
+
+
 
