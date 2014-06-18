@@ -67,7 +67,7 @@ ok( $drawer->draw );
 # semantic annotations consist of a prefix and a property. the prefix is tied to a 
 # namespace URI. the URI that is used here doesn't point to anything (yet), but it
 # is recognized as identifying a vocabular where things are defined about tree drawing
-my $prefix = $mega->get_prefix_for_namespace('http://purl.org/phylo/phylomap/terms#');
+my $prefix = $mega->get_prefix_for_namespace('http://phylomap.org/terms.owl#');
 $mega->visit(sub{
 	my $node = shift;
 	
