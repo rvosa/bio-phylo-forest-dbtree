@@ -54,38 +54,42 @@ sub slurp {
 # attach new, unique labels to interior nodes
 sub label_nodes {
 	my $string = shift;
-	$log->info("going to label nodes");
-	
+
 	# strip previously existing node labels
 	$string =~ s/\)'[^']+'/\)/g;
 	$string =~ s/\)[^:\),]+/\)/g;
-	$log->info("stripped previous node labels");
+	$string =~ s/\)$/e\)/; # add “e” near the end
 	
 	# apply new labels
-	my @tokens = split /\)/, $string;
+	my @tokens = split ( /\)/, $string );
 	my $line = '';
 	my $counter = 1;
 	for my $i ( 0 .. $#tokens ) {
 		$line .= $tokens[$i] . ')n' . $counter++;
 	}
+	$line =~ s/e(\)n\d+)$/$1/; #remove “e”
 	$line .= ';';
-	$log->info("applied ".($counter-1)." unique interior node labels");
-	
+
 	return $line;
 }
 
 # recursively traverse megatree
 sub traverse {
-	my ( $tokens, $parent ) = @_;
+	my ( $tokens, $parent, %seen ) = @_;
 	no warnings 'recursion';
+	my $max = length($tokens) - 1;
+	$log->debug("going to tokenize ".($max+1)." characters");
 	
 	# split tokens into clades, traverse
 	my ( $depth, $label, $clade, @clades ) = ( 0, '', '' );
-	for my $i ( 0 .. length($tokens) - 1 ) {
+	for my $i ( 0 .. $max ) {
+	
+		# take a single character from the token string
 		my $t = substr $tokens, $i, 1;
 		
 		# have completed a clade, store it
-		if ( $t eq ',' ^ $t eq ')' && $depth == 1 ) {
+		if ( ( $t eq ',' ^ $t eq ')' ) && $depth == 1 ) {
+			$log->debug("completed clade at token '$t', index $i");		
 			push @clades, $clade;
 			$clade = '';
 		}
@@ -104,8 +108,10 @@ sub traverse {
 		$depth++ if $t eq '(';
 		$depth-- if $t eq ')';		
 	}
-	print_branch( $label, $parent );
-	traverse( $_, $label ) for @clades;
+	print_branch( $label, $parent ) unless $seen{$label}++;
+	push @clades, $clade if $clade;
+	$log->debug("going to recurse into ".scalar(@clades)." clades");
+	traverse( $_, $label, %seen ) for @clades;
 }
 
 # print focal branch as CSV
