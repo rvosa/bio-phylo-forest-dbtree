@@ -25,6 +25,7 @@ sub connect {
 		# fuck it, let's just hardcode it here - Yeehaw!
 		my $dsn  = "dbi:SQLite:dbname=$file";
 		$DBH = DBI->connect($dsn,'','');
+		$DBH->{'RaiseError'} = 1;
 		$SINGLETON = $class->SUPER::connect( sub { $DBH } );
 	}
 	return $SINGLETON;
