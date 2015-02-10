@@ -1,0 +1,116 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Megatree;
+use Getopt::Long;
+use Bio::Phylo::Util::Logger ':levels';
+
+# process command line arguments
+my $verbosity = WARN;
+my ( $infile, $dbfile );
+GetOptions(
+	'verbose+' => \$verbosity,
+	'infile=s' => \$infile,
+	'dbfile=s' => \$dbfile,
+);
+
+# instantiate helper objects
+my $intree   = Megatree->connect($dbfile);
+my $log      = Bio::Phylo::Util::Logger->new(
+	'-level' => $verbosity,
+	'-class' => 'main',
+);
+
+# read input list, fetch nodes
+my ( @nodes, %tree );
+{
+	$log->info("going to read leaves to keep from $infile");
+	open my $fh, '<', $infile or die $!;
+	while(<$fh>) {
+		chomp;
+		my $name = $_;
+		
+		# skip blank lines
+		if ( $name =~ /\S/ ) {
+			if ( my $node = $intree->_rs->single({ 'name' => $name }) ) {
+				push @nodes, $node;
+				my $id = $node->id;
+				$tree{$id} = {
+					'id'     => $id,
+					'parent' => $node->parent,
+					'name'   => $node->name,
+					'length' => $node->length,
+					'node'   => 0,
+				};
+			}
+			else {
+				$log->warn("node '$name' not in tree");
+			}
+		}
+	}
+	$log->info("read ".scalar(@nodes)." leaves");
+	close $fh;
+}
+
+# use a queue to build the tree
+{
+	$log->info("going to build pruned tree");
+	while( @nodes > 1 ) {
+		$log->info( scalar(@nodes) . ' nodes to go' ) unless scalar(@nodes) % 1000;
+		my $node = shift @nodes;
+		my $parent = $node->get_parent;
+		if ( $parent ) {
+			my $pid = $parent->id;
+			if ( not $tree{$pid} ) {
+				$tree{$pid} = {
+					'id'     => $pid,
+					'parent' => $parent->parent,
+					'name'   => $parent->name,
+					'length' => $parent->length,
+					'node'   => 1,
+				};
+				push @nodes, $parent;
+			}
+		}
+	}
+	$log->info("done building pruned tree");
+}
+
+# remove unbranched internals
+{
+	$log->info("going to remove unbranched internal nodes");
+	for my $node ( sort { $b->{'id'} <=> $a->{'id'} } grep { $_->{'node'} } values %tree ) {
+		my $id = $node->{'id'};
+		my @children = grep { $_->{'parent'} == $id } values %tree;
+	
+		# is unbranched internal
+		if ( @children == 1 ) {
+			$children[0]->{'parent'}  = $node->{'parent'};
+			$children[0]->{'length'} += $node->{'length'};
+			delete $tree{$id};
+		}
+	}
+	$log->info("done removing unbranched internal nodes");
+}
+
+# print the tree
+no warnings 'recursion';
+$|++;
+my ($root) = sort { $a->{'id'} <=> $b->{'id'} } grep { $_->{'node'} } values %tree;
+to_newick($root);
+print ";\n";
+
+sub to_newick {
+	my $node = shift;
+	my $id = $node->{'id'};
+	my @children = grep { $_->{'parent'} == $id } values %tree;
+	if ( @children ) {
+		print '(';
+		for my $i ( 0 .. $#children ) {
+			to_newick($children[$i]);
+			print ',' if $i < $#children;
+		}
+		print ')';
+	}
+	print $node->{'name'}, ':', $node->{'length'};
+}
