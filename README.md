@@ -11,14 +11,14 @@ Requires
 
 Importing data
 ==============
-Given a very large newick file (such as the example 16S_candiv_gg_2011_1
+Given a very large newick file (such as the example `16S_candiv_gg_2011_1`
 green genes tree), the first thing you want to do is transform this into
 an adjacency list, like so:
 
-$ make_megatree -i <tree file> -d <db to create>
+    $ make_megatree -i <tree file> -d <db to create>
 
 When you omit the -d flag, the adjacency list is printed to STDOUT as
-comma separated values, which you can then import into a database. 
+comma separated values, which you can then import into a database.
 
 The columns are:
 - child ID
@@ -39,3 +39,12 @@ in replacement, with the caveat that any methods that try to load all nodes
 in the tree into memory should be avoided. (So, the methods that cleverly
 use the visit_* methods are fine, but the naive ones that treat the tree
 as a list of nodes are not. Yeah, I should fix that.)
+
+A reasonably scalable example of what can be done is provided by the pruner
+script, whose usage is:
+
+    $ prune_megatree -d <db> -i <file> > <newick>
+
+The script takes two arguments: a database file created by `make_megatree`
+and a simple text file that lists taxa to retain (one per line) to create
+the pruned output tree, which is written to STDOUT in newick format.
