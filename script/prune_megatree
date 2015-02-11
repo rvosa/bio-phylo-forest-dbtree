@@ -24,7 +24,7 @@ my $log      = Bio::Phylo::Util::Logger->new(
 # read input list, fetch nodes
 my ( @nodes, %tree );
 {
-	$log->info("going to read leaves to keep from $infile");
+	$log->debug("going to read leaves to keep from $infile");
 	open my $fh, '<', $infile or die $!;
 	while(<$fh>) {
 		chomp;
@@ -48,19 +48,23 @@ my ( @nodes, %tree );
 			}
 		}
 	}
-	$log->info("read ".scalar(@nodes)." leaves");
+	$log->info("read ".scalar(@nodes)." leaves from $infile");
 	close $fh;
 }
 
 # use a queue to build the tree
 {
-	$log->info("going to build pruned tree");
-	while( @nodes > 1 ) {
-		$log->info( scalar(@nodes) . ' nodes to go' ) unless scalar(@nodes) % 1000;
+	$log->debug("going to build subtree");
+	while( @nodes ) {
+		$log->debug( scalar(@nodes) . ' nodes to go' ) unless scalar(@nodes) % 1000;
 		my $node = shift @nodes;
-		my $parent = $node->get_parent;
-		if ( $parent ) {
+
+		# only continue building if focal node has a parent, i.e. is not the root
+		if ( my $parent = $node->get_parent ) {
 			my $pid = $parent->id;
+			
+			# only add the parent of the focal node once, to the tree (though it
+			# would be clobbered in the hash anyway) and in the queue
 			if ( not $tree{$pid} ) {
 				$tree{$pid} = {
 					'id'     => $pid,
@@ -73,12 +77,14 @@ my ( @nodes, %tree );
 			}
 		}
 	}
-	$log->info("done building pruned tree");
+	my @leaves = grep { !$_->{'node'} } values %tree;
+	$log->debug("built subtree with ".scalar(@leaves)." leaves");
 }
 
 # remove unbranched internals
 {
-	$log->info("going to remove unbranched internal nodes");
+	$log->debug("going to remove unbranched internal nodes");
+	my $deleted = 0;
 	for my $node ( sort { $b->{'id'} <=> $a->{'id'} } grep { $_->{'node'} } values %tree ) {
 		my $id = $node->{'id'};
 		my @children = grep { $_->{'parent'} == $id } values %tree;
@@ -88,9 +94,10 @@ my ( @nodes, %tree );
 			$children[0]->{'parent'}  = $node->{'parent'};
 			$children[0]->{'length'} += $node->{'length'};
 			delete $tree{$id};
+			$deleted++;
 		}
 	}
-	$log->info("done removing unbranched internal nodes");
+	$log->info("removed $deleted unbranched internal nodes");
 }
 
 # print the tree
