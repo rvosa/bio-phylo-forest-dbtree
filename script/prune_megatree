@@ -5,13 +5,18 @@ use Megatree;
 use Getopt::Long;
 use Bio::Phylo::Util::Logger ':levels';
 
+# autoflush STDOUT so writing isn't buffered
+$|++;
+
 # process command line arguments
 my $verbosity = WARN;
-my ( $infile, $dbfile );
+my ( $infile, $dbfile, $tabular, $relabel );
 GetOptions(
 	'verbose+' => \$verbosity,
 	'infile=s' => \$infile,
 	'dbfile=s' => \$dbfile,
+	'tabular'  => \$tabular,
+	'relabel'  => \$relabel,
 );
 
 # instantiate helper objects
@@ -69,8 +74,8 @@ my ( @nodes, %tree );
 				$tree{$pid} = {
 					'id'     => $pid,
 					'parent' => $parent->parent,
-					'name'   => $parent->name,
-					'length' => $parent->length,
+					'name'   => ( $relabel ? "n$pid" : $parent->name ),
+					'length' => ( $parent->length || 0 ),
 					'node'   => 1,
 				};
 				push @nodes, $parent;
@@ -101,11 +106,31 @@ my ( @nodes, %tree );
 }
 
 # print the tree
-no warnings 'recursion';
-$|++;
-my ($root) = sort { $a->{'id'} <=> $b->{'id'} } grep { $_->{'node'} } values %tree;
-to_newick($root);
-print ";\n";
+{
+
+	# print the tree as adjacency table
+	if ( $tabular ) {
+		print "child\tparent\tlength\n";
+		for my $node ( sort { $a->{'id'} <=> $b->{'id'} } values %tree ) {
+			print $node->{'name'}, "\t";
+			if ( my $parent = $tree{ $node->{'parent'} } ) {
+				print $parent->{'name'}, "\t";
+			}
+			else {
+				print "\t"; # root
+			}
+			print $node->{'length'}, "\n";
+		}
+	}
+
+	# print the tree as newick
+	else {
+		no warnings 'recursion';
+		my ($root) = sort { $a->{'id'} <=> $b->{'id'} } grep { $_->{'node'} } values %tree;
+		to_newick($root);
+		print ";\n";
+	}
+}
 
 sub to_newick {
 	my $node = shift;
