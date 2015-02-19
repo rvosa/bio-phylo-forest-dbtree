@@ -1,7 +1,8 @@
 package Megatree;
 use strict;
 use warnings;
-use Bio::Phylo::Forest::Tree;
+use Bio::Phylo::Factory;
+use Bio::Phylo::Util::Exceptions 'throw';
 use base 'DBIx::Class::Schema';
 use base 'Bio::Phylo::Forest::Tree';
 
@@ -10,6 +11,7 @@ __PACKAGE__->load_namespaces;
 use DBI;
 my $SINGLETON;
 my $DBH;
+my $fac = Bio::Phylo::Factory->new;
 our $VERSION = '0.1';
 
 sub connect {
@@ -29,6 +31,92 @@ sub connect {
 		$SINGLETON = $class->SUPER::connect( sub { $DBH } );
 	}
 	return $SINGLETON;
+}
+
+sub make_mutable {
+	my $self = shift;
+	my $tree = $fac->create_tree;
+	my $root = $self->get_root;
+	_clone_mutable(
+		$fac->create_node(
+			'-name'          => $root->get_name,
+			'-branch_length' => $root->get_branch_length,
+		),
+		$root,
+		$tree
+	);
+	return $tree;
+}
+
+{
+	no warnings 'recursion';
+	sub _clone_mutable {
+		my ( $parent, $template, $tree ) = @_;
+		$tree->insert($parent);
+		for my $child ( @{ $template->get_children } ) {
+			_clone_mutable( 
+				$fac->create_node(
+					'-name'          => $child->get_name,
+					'-branch_length' => $child->get_branch_length,
+					'-parent'        => $parent,
+				),
+				$child,
+				$tree
+			);
+		}
+	}
+}
+
+sub persist {
+	my ( $class, %args ) = @_;
+	
+	# need a file argument to write to
+	if ( not $args{'-file'} ) {
+		throw 'BadArgs' => "Need -file argument!";
+	}
+	
+	# need a tree argument to persis
+	if ( not $args{'-tree'} ) {
+		throw 'BadArgs' => "Need -tree argument!";
+	}
+	
+	# create a new database, prepare statement handler
+	$class->create( $args{'-file'} );
+	my $dsn = 'dbi:SQLite:dbname=' . $args{'-file'};
+	my $dbh = DBI->connect($dsn,'','');
+	$dbh->{'RaiseError'} = 1;
+	my $db = $class->SUPER::connect( sub { $dbh } );		
+	my $sth = $dbh->prepare("insert into node values(?,?,?,?)");
+	
+	# start traversing
+	my $counter = 2;
+	my %idmap;
+	$args{'-tree'}->visit_depth_first(
+		'-pre' => sub {
+			my $node    = shift;
+			my $id      = $node->get_id;
+			$idmap{$id} = $counter++;
+			
+			# get the parent id, or "1" if root
+			my $parent_id;
+			if ( my $parent = $node->get_parent ) {
+				my $pid = $parent->get_id;
+				$parent_id = $idmap{$pid};
+			}
+			else {
+				$parent_id = 1;
+			}
+			
+			# do the insertion
+			$sth->execute(
+				$idmap{$id},               # primary key
+				$parent_id,                # self-joining foreign key
+				$node->get_internal_name,  # node label or taxon name
+				$node->get_branch_length,  # branch length
+			);
+		}
+	);
+	return $db;
 }
 
 sub _rs { shift->resultset('Node') }
