@@ -111,11 +111,16 @@ sub persist {
 			$sth->execute(
 				$idmap{$id},               # primary key
 				$parent_id,                # self-joining foreign key
+				undef,                     # not indexed yet
+				undef,                     # not indexed yet
 				$node->get_internal_name,  # node label or taxon name
 				$node->get_branch_length,  # branch length
+				undef                      # not computed yet
 			);
 		}
 	);
+	my $i = 0;
+	$db->get_root->_index(\$i,0);
 	return $db;
 }
 
@@ -128,8 +133,10 @@ sub dbh { $DBH }
 sub create {
 	my ($class,$file) = @_;
 	my $command = <<'COMMAND';
-create table node(id int not null,parent int,name varchar(20),length float,primary key(id));
+create table node(id int not null,parent int,left int,right int,name varchar(20),length float,height float,primary key(id));
 create index parent_idx on node(parent);
+create index left_idx on node(left);
+create index right_idx on node(right);
 create index name_idx on node(name);
 COMMAND
 	system("echo '$command' | sqlite3 $file") == 0 or die 'Create failed!';
