@@ -17,11 +17,12 @@ die "Usage: make_megatree -i <infile> [-d <dbfile>] [--verbose]\n" if not $infil
 
 # instantiate helper objects
 my $log = Bio::Phylo::Util::Logger->new( '-level' => $verbosity, '-class' => 'main' );
-my $sth;
+my ( $sth, $megatree );
 if ( $dbfile ) {
 	$log->info("will insert megatree directly into db '$dbfile'");
-	my $dbh = Megatree->connect($dbfile)->dbh;
-	$sth = $dbh->prepare("insert into node values(?,?,?,?)");
+	$megatree = Megatree->connect($dbfile);
+	$dbh = $megatree->dbh;
+	$sth = $dbh->prepare("insert into node(id,parent,name,length) values(?,?,?,?)");
 }
 else {
 	$log->warn("no db file given, CSV output will be written to STDOUT");
@@ -36,6 +37,10 @@ if ( $labeled =~ /^(.+);$/ ) {
 	my $clade = $1;
 	$log->info("captured outer clade, going to traverse");
 	traverse( $clade );
+	if ( $megatree ) {
+		$log->info("going to compute indexes");
+		$megatree->get_root->_index;
+	}
 }
 else {
 	die "no ; in newick: $labeled";
@@ -132,7 +137,7 @@ sub print_branch {
 		if ( $child =~ /(.+?):(.+);\)/ ) {
 			( $child, $length ) = ( $1, $2 );
 		}		
-		$idcache{$child}  = $idcounter++ unless $idcache{$child};
+		$idcache{$child} = $idcounter++ unless $idcache{$child};
 		doprint($idcache{$child},1,$child,$length);
 	}
 }
