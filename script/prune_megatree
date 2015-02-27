@@ -10,11 +10,12 @@ $|++;
 
 # process command line arguments
 my $verbosity = WARN;
-my ( $infile, $dbfile, $tabular, $relabel );
+my ( $infile, $dbfile, $tabular, $relabel, $list );
 GetOptions(
 	'verbose+' => \$verbosity,
 	'infile=s' => \$infile,
 	'dbfile=s' => \$dbfile,
+	'list=s'   => \$list,
 	'tabular'  => \$tabular,
 	'relabel'  => \$relabel,
 );
@@ -29,14 +30,36 @@ my $log      = Bio::Phylo::Util::Logger->new(
 # read input list, fetch nodes
 my ( @nodes, %tree );
 {
-	$log->debug("going to read leaves to keep from $infile");
-	open my $fh, '<', $infile or die $!;
-	while(<$fh>) {
-		chomp;
-		my $name = $_;
+	if ( $infile ) {
+		$log->debug("going to read leaves to keep from $infile");
+		open my $fh, '<', $infile or die $!;
+		while(<$fh>) {
+			chomp;
+			my $name = $_;
 		
-		# skip blank lines
-		if ( $name =~ /\S/ ) {
+			# skip blank lines
+			if ( $name =~ /\S/ ) {
+				if ( my $node = $intree->_rs->single({ 'name' => $name }) ) {
+					push @nodes, $node;
+					my $id = $node->id;
+					$tree{$id} = {
+						'id'     => $id,
+						'parent' => $node->parent,
+						'name'   => $node->name,
+						'length' => $node->length,
+						'node'   => 0,
+					};
+				}
+				else {
+					$log->warn("node '$name' not in tree");
+				}
+			}
+		}
+		$log->info("read ".scalar(@nodes)." leaves from $infile");
+		close $fh;
+	}
+	elsif ( $list ) {
+		for my $name ( split /,/, $list ) {
 			if ( my $node = $intree->_rs->single({ 'name' => $name }) ) {
 				push @nodes, $node;
 				my $id = $node->id;
@@ -50,11 +73,10 @@ my ( @nodes, %tree );
 			}
 			else {
 				$log->warn("node '$name' not in tree");
-			}
+			}		
 		}
+		$log->info("read ".scalar(@nodes)." leaves from $list");
 	}
-	$log->info("read ".scalar(@nodes)." leaves from $infile");
-	close $fh;
 }
 
 # use a queue to build the tree
