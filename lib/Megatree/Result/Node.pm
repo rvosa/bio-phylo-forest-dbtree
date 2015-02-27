@@ -78,70 +78,72 @@ sub get_parent {
 	return $self->_schema->find($self->parent);
 }
 
-sub get_children {
+sub get_children_rs {
 	my $self = shift;
-	return [ $self->_schema->search({ 'parent' => $self->id })->all ];
+	return $self->_schema->search({ 'parent' => $self->id });
 }
 
-sub get_descendants {
+sub get_children { [ shift->get_children_rs->all ] }
+
+sub get_descendants_rs {
 	my $self = shift;
-	return [
-		$self->_schema->search(
-			{
-				'-and' => [
-					'left'  => { '>' => $self->left },
-					'right' => { '<' => $self->right },
-				]
-			}
-		)->all
-	];
+	return $self->_schema->search(
+		{
+			'-and' => [
+				'left'  => { '>' => $self->left },
+				'right' => { '<' => $self->right },
+			]
+		}
+	)
 }
 
-sub get_terminals {
+sub get_descendants { [ shift->get_descendants_rs->all ] }
+
+sub get_terminals_rs {
 	my $self = shift;
 	my $scalar = 'right';
-	return [
-		$self->_schema->search(
-			{
-				'-and' => [
-					'left'  => { '>' => $self->left },
-					'right' => { '<' => $self->right },
-					'left'  => { '==' => \$scalar },
-				]
-			}
-		)->all
-	];
+	return $self->_schema->search(
+		{
+			'-and' => [
+				'left'  => { '>' => $self->left },
+				'right' => { '<' => $self->right },
+				'left'  => { '==' => \$scalar },
+			]
+		}
+	)	
 }
 
-sub get_internals {
+sub get_terminals { [ shift->get_terminals_rs->all ] }
+
+sub get_internals_rs {
 	my $self = shift;
 	my $scalar = 'right';
-	return [
-		$self->_schema->search(
-			{
-				'-and' => [
-					'left'  => { '>' => $self->left },
-					'right' => { '<' => $self->right },
-					'left'  => { '!=' => \$scalar },
-				]
-			}
-		)->all
-	];
+	return $self->_schema->search(
+		{
+			'-and' => [
+				'left'  => { '>' => $self->left },
+				'right' => { '<' => $self->right },
+				'left'  => { '!=' => \$scalar },
+			]
+		}
+	)
 }
 
-sub get_ancestors {
+sub get_internals { [ shift->get_internals_rs->all ] }
+
+sub get_ancestors_rs {
 	my $self = shift;
-	return [
-		$self->_schema->search(
-			{
-				'-and' => [
-					'left'  => { '<' => $self->left },
-					'right' => { '>' => $self->right },
-				]
-			}
-		)->all
-	];
+	return $self->_schema->search(
+		{
+			'-and' => [
+				'left'  => { '<' => $self->left },
+				'right' => { '>' => $self->right },
+			]
+		}
+	)
 }
+
+sub get_ancestors { [ shift->get_ancestors_rs->all ] }
 
 sub get_mrca {
 	my ( $self, $other ) = @_;
@@ -177,6 +179,11 @@ sub get_id { shift->id }
 sub get_name { shift->name }
 
 sub get_branch_length { shift->length }
+
+sub is_descendant_of {
+	my ( $self, $other ) = @_;
+	return ( $self->left > $other->left ) && ( $self->right < $other->right );
+}
 
 sub calc_patristic_distance {
 	my ( $self, $other ) = @_;
