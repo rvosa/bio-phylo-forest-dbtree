@@ -1,6 +1,7 @@
 package Megatree;
 use strict;
 use warnings;
+use DBI;
 use Bio::Phylo::Factory;
 use Bio::Phylo::Util::Exceptions 'throw';
 use base 'DBIx::Class::Schema';
@@ -8,7 +9,6 @@ use base 'Bio::Phylo::Forest::Tree';
 
 __PACKAGE__->load_namespaces;
 
-use DBI;
 my $SINGLETON;
 my $DBH;
 my $fac = Bio::Phylo::Factory->new;
@@ -131,14 +131,10 @@ sub get_root { shift->_rs->find(2) }
 sub dbh { $DBH }
 
 sub create {
-	my ($class,$file) = @_;
-	my $command = <<'COMMAND';
-create table node(id int not null,parent int,left int,right int,name varchar(20),length float,height float,primary key(id));
-create index parent_idx on node(parent);
-create index left_idx on node(left);
-create index right_idx on node(right);
-create index name_idx on node(name);
-COMMAND
+	my $class = shift;
+	my $file  = shift;
+	my $sqlite3 = shift || 'sqlite3';
+	my $command = do { local $/; <DATA> };
 	system("echo '$command' | sqlite3 $file") == 0 or die 'Create failed!';
 }
 
@@ -154,3 +150,10 @@ sub visit {
 }
 
 1;
+
+__DATA__
+create table node(id int not null,parent int,left int,right int,name varchar(20),length float,height float,primary key(id));
+create index parent_idx on node(parent);
+create index left_idx on node(left);
+create index right_idx on node(right);
+create index name_idx on node(name);
