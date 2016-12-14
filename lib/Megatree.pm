@@ -140,6 +140,11 @@ sub create {
 
 sub get_id { 0 }
 
+sub get_by_name {
+	my ( $self, $name ) = @_;
+	return $self->_rs->search({ 'name' => $name })->single;
+}
+
 sub visit {
 	my ( $self, $code ) = @_;
 	my $rs = $self->_rs;
