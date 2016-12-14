@@ -166,7 +166,13 @@ sub get_mrca {
 sub _index {
 	my ( $self, $counter, $height ) = @_;
 	$height += ( $self->get_branch_length || 0 );
-	$$counter = $$counter + 1;
+	if ( ref($counter) eq 'SCALAR' ) {
+		$$counter = $$counter + 1;
+	}
+	else {
+		my $i = 1;
+		$counter = \$i;
+	}
 	$self->update({ 'left' => $$counter, 'height' => $height });
 	for my $child ( @{ $self->get_children } ) {
 		$child->_index($counter, $height);
