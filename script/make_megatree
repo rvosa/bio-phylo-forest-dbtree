@@ -17,7 +17,7 @@ die "Usage: make_megatree -i <infile> [-d <dbfile>] [--verbose]\n" if not $infil
 
 # instantiate helper objects
 my $log = Bio::Phylo::Util::Logger->new( '-level' => $verbosity, '-class' => 'main' );
-my ( $sth, $megatree );
+my ( $sth, $megatree, $dbh );
 if ( $dbfile ) {
 	$log->info("will insert megatree directly into db '$dbfile'");
 	$megatree = Megatree->connect($dbfile);
