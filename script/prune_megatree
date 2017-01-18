@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use Megatree;
+use Data::Dumper;
 use Getopt::Long;
 use Bio::Phylo::Util::Logger ':levels';
 
@@ -10,14 +11,16 @@ $|++;
 
 # process command line arguments
 my $verbosity = WARN;
-my ( $infile, $dbfile, $tabular, $relabel, $list );
+my ( $infile, $dbfile, $tabular, $relabel, $list, $all, $keys );
 GetOptions(
 	'verbose+' => \$verbosity,
-	'infile=s' => \$infile,
-	'dbfile=s' => \$dbfile,
-	'list=s'   => \$list,
-	'tabular'  => \$tabular,
-	'relabel'  => \$relabel,
+	'infile=s' => \$infile, 
+	'dbfile=s' => \$dbfile, # sqlite file
+	'list=s'   => \$list, # input is a comma-separated list
+	'tabular'  => \$tabular, # output as adjacency table
+	'relabel'  => \$relabel, # relabel internal nodes to /n\d+/
+	'all'      => \$all, # keep all taxonomic levels, i.e. including unbranched internals
+	'keys'     => \$keys, # inputs are primary keys, not names
 );
 
 # instantiate helper objects
@@ -30,6 +33,18 @@ my $log      = Bio::Phylo::Util::Logger->new(
 # read input list, fetch nodes
 my ( @nodes, %tree );
 {
+
+	# compose query depending on whether the inputs are primary keys or names
+	my $query = sub {
+		my $term = shift;
+		if ( $keys ) {
+			return $intree->_rs->find($term);
+		}
+		else {
+			return $intree->_rs->single({ 'name' => $term });
+		}
+	};
+	
 	if ( $infile ) {
 		$log->debug("going to read leaves to keep from $infile");
 		open my $fh, '<', $infile or die $!;
@@ -39,7 +54,7 @@ my ( @nodes, %tree );
 		
 			# skip blank lines
 			if ( $name =~ /\S/ ) {
-				if ( my $node = $intree->_rs->single({ 'name' => $name }) ) {
+				if ( my $node = $query->($name) ) {
 					push @nodes, $node;
 					my $id = $node->id;
 					$tree{$id} = {
@@ -60,7 +75,7 @@ my ( @nodes, %tree );
 	}
 	elsif ( $list ) {
 		for my $name ( split /,/, $list ) {
-			if ( my $node = $intree->_rs->single({ 'name' => $name }) ) {
+			if ( my $node = $query->($name) ) {
 				push @nodes, $node;
 				my $id = $node->id;
 				$tree{$id} = {
@@ -109,7 +124,7 @@ my ( @nodes, %tree );
 }
 
 # remove unbranched internals
-{
+if ( not $all ) {
 	$log->debug("going to remove unbranched internal nodes");
 	my $deleted = 0;
 	for my $node ( sort { $b->{'id'} <=> $a->{'id'} } grep { $_->{'node'} } values %tree ) {
@@ -130,6 +145,13 @@ my ( @nodes, %tree );
 # print the tree
 {
 
+	# print anything that we have, quit if unsuccessful
+	$log->debug(Dumper(\%tree));
+	if ( not %tree ) {
+		$log->error("no tree was extracted, quitting");
+		exit(1);
+	}
+
 	# print the tree as adjacency table
 	if ( $tabular ) {
 		print "child\tparent\tlength\n";
@@ -141,7 +163,8 @@ my ( @nodes, %tree );
 			else {
 				print "\t"; # root
 			}
-			print $node->{'length'}, "\n";
+			my $length = defined $node->{'length'} ? $node->{'length'} : '';
+			print $length, "\n";
 		}
 	}
 
@@ -157,7 +180,12 @@ my ( @nodes, %tree );
 sub to_newick {
 	my $node = shift;
 	my $id = $node->{'id'};
-	my @children = grep { $_->{'parent'} == $id } values %tree;
+	
+	# the second clause is here because the NCBI taxonomy has the odd feature that the
+	# parent ID of the root is the same as the ID of the root. Of course the root 
+	# shouldn't have a parent ID at all, because it doesn't have a parent, but if
+	# it does it certainly shouldn't be the same as itself, creating a cycle. #NCBILOL
+	my @children = grep { $_->{'parent'} == $id && $_->{'id'} != $id } values %tree;
 	if ( @children ) {
 		print '(';
 		for my $i ( 0 .. $#children ) {
@@ -166,5 +194,10 @@ sub to_newick {
 		}
 		print ')';
 	}
-	print $node->{'name'}, ':', $node->{'length'};
+	if ( defined $node->{'length'} ) {
+		print $node->{'name'}, ':', $node->{'length'};
+	}
+	else {
+		print $node->{'name'};
+	}
 }
