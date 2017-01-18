@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Getopt::Long;
 use Bio::Phylo::Util::Logger ':levels';
-use Megatree;
+use Bio::Phylo::Forest::DBTree;
 
 # process command line arguments
 my $verbosity = WARN;
@@ -20,7 +20,7 @@ if ( not $names or not $nodes or not $dbfile ) {
 
 # instantiate helper objects
 my $log = Bio::Phylo::Util::Logger->new( '-level' => $verbosity, '-class' => 'main' );
-my $megatree = Megatree->connect($dbfile);
+my $megatree = Bio::Phylo::Forest::DBTree->connect($dbfile);
 my $dbh = $megatree->dbh;
 
 # insert topology

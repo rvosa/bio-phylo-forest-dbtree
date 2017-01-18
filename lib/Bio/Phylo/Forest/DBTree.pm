@@ -1,4 +1,4 @@
-package Megatree;
+package Bio::Phylo::Forest::DBTree;
 use strict;
 use warnings;
 use DBI;
@@ -126,7 +126,7 @@ sub persist {
 
 sub _rs { shift->resultset('Node') }
 
-sub get_root { shift->_rs->find(2) }
+sub get_root { shift->_rs->search({ 'parent' => '1' }) }
 
 sub dbh { $DBH }
 
