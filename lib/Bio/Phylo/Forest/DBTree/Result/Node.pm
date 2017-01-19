@@ -80,7 +80,13 @@ sub get_parent {
 
 sub get_children_rs {
 	my $self = shift;
-	return $self->_schema->search({ 'parent' => $self->id });
+	my $id = $self->id;
+	return $self->_schema->search({
+		'-and' => [ 
+			'parent' => { '==' => $id },
+			'id'     => { '!=' => $id },
+		]
+	});
 }
 
 sub get_children { [ shift->get_children_rs->all ] }
