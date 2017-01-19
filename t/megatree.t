@@ -6,13 +6,13 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 
 # try to use the Megatree class
-use_ok('Megatree');
+use_ok('Bio::Phylo::Forest::DBTree');
 
 # the dbfile holds the tree as in trivial.newick
 my $dbfile = "$FindBin::Bin/../data/16S_candiv_gg_2011_1.db";
 
 # try to connect to the database
-my $mega = Megatree->connect($dbfile);
+my $mega = Bio::Phylo::Forest::DBTree->connect($dbfile);
 ok($mega);
 
 # get the root of the tree

@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Long;
+use Bio::Phylo::Util::Logger ':levels';
+use Bio::Phylo::Forest::DBTree;
+
+# process command line arguments
+my $verbosity = WARN;
+my ( $nodes, $names, $dbfile );
+GetOptions(
+	'nodes=s'  => \$nodes,
+	'names=s'  => \$names,
+	'dbfile=s' => \$dbfile,
+	'verbose+' => \$verbosity,
+);
+if ( not $names or not $nodes or not $dbfile ) {
+	die "Usage: load_ncbi -names <names.dmp> -nodes <nodes.dmp> -d <dbfile> [-v]\n";
+}
+
+# instantiate helper objects
+my $log = Bio::Phylo::Util::Logger->new( '-level' => $verbosity, '-class' => 'main' );
+my $megatree = Bio::Phylo::Forest::DBTree->connect($dbfile);
+my $dbh = $megatree->dbh;
+
+# insert topology
+{
+	$log->info("going to insert topology");
+	my $i = 0;
+	my $sth = $dbh->prepare("insert into node(id,parent,length) values(?,?,?)");
+	open my $fh, '<', $nodes or die $!;
+	while(<$fh>) {
+		chomp;
+		my ( $id, $parent ) = split /\t\|\t/, $_;
+		$sth->execute($id,$parent,1);
+		$log->info("inserted node $i") unless ++$i % 1000;
+	}
+}
+
+# insert names
+{
+	$log->info("going to insert names");
+	my $i = 0;	
+	open my $fh, '<', $names or die $!;
+	while(<$fh>) {
+		chomp;
+		my $sth = $dbh->prepare("update node set name = ? where id = ?");	
+		my ( $id, $name, $discard, $type ) = split /\t\|\t/, $_;
+		if ( $type eq 'scientific name	|' ) {			
+			$sth->execute($name,$id);
+			$log->info("inserted name $i ($name)") unless ++$i % 1000;
+		}
+	}
+}
+
+# done
+$log->info("going to compute indexes");
+$megatree->get_root->_index;

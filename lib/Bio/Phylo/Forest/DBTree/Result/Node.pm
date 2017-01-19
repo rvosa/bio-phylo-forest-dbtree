@@ -1,7 +1,7 @@
-package Megatree::Result::Node;
+package Bio::Phylo::Forest::DBTree::Result::Node;
 use strict;
 use warnings;
-use Megatree;
+use Bio::Phylo::Forest::DBTree;
 use Bio::Phylo::Forest::Node;
 use base 'DBIx::Class::Core';
 use base 'Bio::Phylo::Forest::Node';
@@ -68,7 +68,7 @@ __PACKAGE__->set_primary_key("id");
 my $schema;
 sub _schema {
 	if ( not $schema ) {
-		$schema = Megatree->connect->resultset('Node');
+		$schema = Bio::Phylo::Forest::DBTree->connect->resultset('Node');
 	}
 	return $schema;
 }
@@ -80,7 +80,13 @@ sub get_parent {
 
 sub get_children_rs {
 	my $self = shift;
-	return $self->_schema->search({ 'parent' => $self->id });
+	my $id = $self->id;
+	return $self->_schema->search({
+		'-and' => [ 
+			'parent' => { '==' => $id },
+			'id'     => { '!=' => $id },
+		]
+	});
 }
 
 sub get_children { [ shift->get_children_rs->all ] }

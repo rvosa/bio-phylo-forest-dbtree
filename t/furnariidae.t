@@ -9,11 +9,11 @@ use Config;
 
 my $size = 3267;
 
-# Test to use the Megatree class. This needs to be in a BEGIN block (i.e. during
-# the "compile" phase), and any 'use Megatree' statement at the top of the script
-# needs to be omitted, else we would never reach a failing test as the compile phase
-# would already have bombed had the 'use' statement posed problems.
-BEGIN { use_ok('Megatree'); }
+# Test to use the DBTree class. This needs to be in a BEGIN block (i.e. during
+# the "compile" phase), and any 'use Bio::Phylo::Forest::DBTree' statement at the top of 
+# the script needs to be omitted, else we would never reach a failing test as the compile 
+# phase would already have bombed had the 'use' statement posed problems.
+BEGIN { use_ok('Bio::Phylo::Forest::DBTree'); }
 
 # The dbfile holds the tree as in trivial.newick. Here using FindBin::$Bin so that
 # the relative path to the SQLite file can be computed portably from any location.
@@ -21,8 +21,8 @@ my $dbfile = "$Bin/Furnariidae.db";
 ok( -e $dbfile, "$dbfile exists" );
 
 # connect and test
-my $mega = Megatree->connect($dbfile);
-ok($mega, "Megatree instantiated correctly");
+my $mega = Bio::Phylo::Forest::DBTree->connect($dbfile);
+ok($mega, "Bio::Phylo::Forest::DBTree instantiated correctly");
 isa_ok($mega, 'Bio::Phylo::Forest::DrawTreeRole'); # note the new inheritance topology
 
 # Get the root of the tree and test

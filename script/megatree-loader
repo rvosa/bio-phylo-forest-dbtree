@@ -2,8 +2,8 @@
 use strict;
 use warnings;
 use Getopt::Long;
+use Bio::Phylo::Forest::DBTree;
 use Bio::Phylo::Util::Logger ':levels';
-use Megatree;
 
 # process command line arguments
 my $verbosity = WARN;
@@ -19,8 +19,12 @@ die "Usage: make_megatree -i <infile> [-d <dbfile>] [--verbose]\n" if not $infil
 my $log = Bio::Phylo::Util::Logger->new( '-level' => $verbosity, '-class' => 'main' );
 my ( $sth, $megatree, $dbh );
 if ( $dbfile ) {
+	if ( -e $dbfile ) {
+		$log->fatal("$dbfile already exists, won't overwrite");
+		exit(1);
+	}
 	$log->info("will insert megatree directly into db '$dbfile'");
-	$megatree = Megatree->connect($dbfile);
+	$megatree = Bio::Phylo::Forest::DBTree->connect($dbfile);
 	$dbh = $megatree->dbh;
 	$sth = $dbh->prepare("insert into node(id,parent,name,length) values(?,?,?,?)");
 }

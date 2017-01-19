@@ -1,4 +1,4 @@
-package Megatree;
+package Bio::Phylo::Forest::DBTree;
 use strict;
 use warnings;
 use DBI;
@@ -33,38 +33,12 @@ sub connect {
 	return $SINGLETON;
 }
 
-sub make_mutable {
-	my $self = shift;
-	my $tree = $fac->create_tree;
-	my $root = $self->get_root;
-	_clone_mutable(
-		$fac->create_node(
-			'-name'          => $root->get_name,
-			'-branch_length' => $root->get_branch_length,
-		),
-		$root,
-		$tree
-	);
-	return $tree;
-}
-
-{
-	no warnings 'recursion';
-	sub _clone_mutable {
-		my ( $parent, $template, $tree ) = @_;
-		$tree->insert($parent);
-		for my $child ( @{ $template->get_children } ) {
-			_clone_mutable( 
-				$fac->create_node(
-					'-name'          => $child->get_name,
-					'-branch_length' => $child->get_branch_length,
-					'-parent'        => $parent,
-				),
-				$child,
-				$tree
-			);
-		}
-	}
+sub create {
+	my $class = shift;
+	my $file  = shift;
+	my $sqlite3 = shift || 'sqlite3';
+	my $command = do { local $/; <DATA> };
+	system("echo '$command' | sqlite3 $file") == 0 or die 'Create failed!';
 }
 
 sub persist {
@@ -124,18 +98,49 @@ sub persist {
 	return $db;
 }
 
-sub _rs { shift->resultset('Node') }
+sub make_mutable {
+	my $self = shift;
+	my $tree = $fac->create_tree;
+	my $root = $self->get_root;
+	_clone_mutable(
+		$fac->create_node(
+			'-name'          => $root->get_name,
+			'-branch_length' => $root->get_branch_length,
+		),
+		$root,
+		$tree
+	);
+	return $tree;
+}
 
-sub get_root { shift->_rs->find(2) }
+{
+	no warnings 'recursion';
+	sub _clone_mutable {
+		my ( $parent, $template, $tree ) = @_;
+		$tree->insert($parent);
+		for my $child ( @{ $template->get_children } ) {
+			_clone_mutable( 
+				$fac->create_node(
+					'-name'          => $child->get_name,
+					'-branch_length' => $child->get_branch_length,
+					'-parent'        => $parent,
+				),
+				$child,
+				$tree
+			);
+		}
+	}
+}
 
-sub dbh { $DBH }
 
-sub create {
-	my $class = shift;
-	my $file  = shift;
-	my $sqlite3 = shift || 'sqlite3';
-	my $command = do { local $/; <DATA> };
-	system("echo '$command' | sqlite3 $file") == 0 or die 'Create failed!';
+sub get_root { 
+	shift->_rs->search(
+		{ 'parent' => 1 },
+		{
+			'order_by' => 'id',
+			'rows'     => 1,
+		}
+	)->single 
 }
 
 sub get_id { 0 }
@@ -153,6 +158,10 @@ sub visit {
 	}
 	return $self;
 }
+
+sub dbh { $DBH }
+
+sub _rs { shift->resultset('Node') }
 
 1;
 
