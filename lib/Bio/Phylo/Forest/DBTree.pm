@@ -133,7 +133,15 @@ sub make_mutable {
 }
 
 
-sub get_root { shift->_rs->search({ 'parent' => '1' }) }
+sub get_root { 
+	shift->_rs->search(
+		{ 'parent' => 1 },
+		{
+			'order_by' => 'id',
+			'rows'     => 1,
+		}
+	)->single 
+}
 
 sub get_id { 0 }
 
