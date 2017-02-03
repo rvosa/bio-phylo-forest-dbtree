@@ -13,11 +13,16 @@ GetOptions(
 	'infile=s' => \$infile,
 	'dbfile=s' => \$dbfile,
 );
+die "Usage: $0 -i <infile> [-d <dbfile>] [-v]\n" if not $infile;
 
 # instantiate helper objects
 my $log = Bio::Phylo::Util::Logger->new(
 	'-level' => $verbosity,
-	'-class' => 'main',
+	'-style' => 'simple',
+	'-class' => [
+		'main',
+		'Bio::Phylo::Forest::DBTree::Result::Node'
+	]		
 );
 
 # set up database stuff
@@ -82,6 +87,7 @@ sub read_tree {
 		}
 		print_branch( $label => $parent );
 		$line++;
+		$log->info("inserted node $line") unless $line % 1000;
 	}
 }
 
