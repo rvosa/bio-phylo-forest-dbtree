@@ -3,8 +3,12 @@ use strict;
 use warnings;
 use Bio::Phylo::Forest::DBTree;
 use Bio::Phylo::Forest::Node;
+use Bio::Phylo::Util::Logger;
 use base 'DBIx::Class::Core';
 use base 'Bio::Phylo::Forest::Node';
+
+my $log = Bio::Phylo::Util::Logger->new;
+
 __PACKAGE__->table("node");
 
 =head1 ACCESSORS
@@ -169,25 +173,37 @@ sub get_mrca {
 	)->single;			
 }
 
-sub _index {
-	my ( $self, $counter, $height ) = @_;
-	$height += ( $self->get_branch_length || 0 );
-	if ( ref($counter) eq 'SCALAR' ) {
-		$$counter = $$counter + 1;
+{
+	no warnings 'recursion';
+	sub _index {
+		my ( $self, $counter, $height ) = @_;
+		$height += ( $self->get_branch_length || 0 );
+		
+		# initialize or update counter
+		if ( ref($counter) eq 'SCALAR' ) {
+			$$counter = $$counter + 1;
+		}
+		else {
+			my $i = 1;
+			$counter = \$i;
+		}
+		
+		# report progress
+		if ( not $$counter % 1000 ) {
+			$log->info("updated index ".$$counter);
+		}
+		
+		# update and recurse
+		$self->update({ 'left' => $$counter, 'height' => $height });		
+		my @c = @{ $self->get_children };
+		for my $child ( @c ) {
+			$child->_index($counter, $height);
+		}
+		if ( @c ) {
+			$$counter = $$counter + 1;
+		}
+		$self->update({ 'right' => $$counter });
 	}
-	else {
-		my $i = 1;
-		$counter = \$i;
-	}
-	$self->update({ 'left' => $$counter, 'height' => $height });
-	my @c = @{ $self->get_children };
-	for my $child ( @c ) {
-		$child->_index($counter, $height);
-	}
-	if ( @c ) {
-		$$counter = $$counter + 1;
-	}
-	$self->update({ 'right' => $$counter });
 }
 
 sub get_id { shift->id }
