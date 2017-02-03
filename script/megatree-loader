@@ -1,9 +1,13 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Pod::Usage;
 use Getopt::Long;
 use Bio::Phylo::Forest::DBTree;
 use Bio::Phylo::Util::Logger ':levels';
+
+# autoflush STDOUT so writing isn't buffered
+$|++;
 
 # process command line arguments
 my $verbosity = WARN;
@@ -12,11 +16,82 @@ GetOptions(
 	'infile=s' => \$infile,
 	'dbfile=s' => \$dbfile,
 	'verbose+' => \$verbosity,
+	'help'     => sub { pod2usage() },
+	'man'      => sub { pod2usage(1) },	
 );
-die "Usage: make_megatree -i <infile> [-d <dbfile>] [--verbose]\n" if not $infile;
+pod2usage() if not $infile;
+
+=head1 NAME
+
+megatree-loader - Loads a Newick tree into a database or a spreadsheet
+
+=head1 SYNOPSIS
+
+    megatree-loader -i <file> [-d <file>] [-vhm]
+
+=head1 OPTIONS
+
+=over
+
+=item B<< -i <file> >> or B<< -infile <file> >>
+
+Input tree file in Newick format.
+
+=item B<< -d <file> >> or B<< -dbfile <file> >>
+
+Optional.
+
+Location of a database file, compatible with sqlite3, which will be produced. This file
+can not yet exist. If it does, an error message will be emitted and the program will quit.
+
+If this argument is not provided, the tree topology will be emitted as a comma-separated 
+spreadsheet. (In principle, this spreadsheet could subsequently be loaded into sqlite3
+and then be further indexed by the API.)
+
+=item B<-v> or B<-verbose>
+
+Optional.
+
+With this option, more feedback messages are written during processing. This option can be
+used multiple times, which increases the verbosity further.
+
+=item B<-h> or B<-help>
+
+Optional.
+
+Prints help message / documentation.
+
+=item B<-m> or B<-man>
+
+Optional.
+
+Prints manual page. Additional information is available in the documentation, i.e.
+C<perldoc megatree-loader>
+
+=back
+
+=head1 DESCRIPTION
+
+This program produces a database file or a CSV spreadsheet from a (very large) Newick tree
+file. Such a database provides much quicker random access to immutable trees, such as very
+large metabarcoding trees, the NCBI taxonomy, etc. The example trees that are referred to
+by the release of L<Bio::Phylo::Forest::DBTree> have been produced in this way. They can
+be accessed by an API that is compatible with L<Bio::Phylo>, but much more scalable. An
+example of such API usage is presented by the L<megatree-pruner> script.
+
+=cut
 
 # instantiate helper objects
-my $log = Bio::Phylo::Util::Logger->new( '-level' => $verbosity, '-class' => 'main' );
+my $log = Bio::Phylo::Util::Logger->new( 
+	'-level' => $verbosity, 
+	'-style' => 'simple',
+	'-class' => [
+		'main',
+		'Bio::Phylo::Forest::DBTree::Result::Node'
+	]
+);
+
+# setup database handles
 my ( $sth, $megatree, $dbh );
 if ( $dbfile ) {
 	if ( -e $dbfile ) {
@@ -26,7 +101,11 @@ if ( $dbfile ) {
 	$log->info("will insert megatree directly into db '$dbfile'");
 	$megatree = Bio::Phylo::Forest::DBTree->connect($dbfile);
 	$dbh = $megatree->dbh;
+	
+	# http://search.cpan.org/~ishigaki/DBD-SQLite-1.54/lib/DBD/SQLite.pm#Transactions
 	$sth = $dbh->prepare("insert into node(id,parent,name,length) values(?,?,?,?)");
+	$dbh->{'AutoCommit'} = 1;	
+	$dbh->begin_work;		
 }
 else {
 	$log->warn("no db file given, CSV output will be written to STDOUT");
@@ -44,6 +123,8 @@ if ( $labeled =~ /^(.+);$/ ) {
 	if ( $megatree ) {
 		$log->info("going to compute indexes");
 		$megatree->get_root->_index;
+		$dbh = $megatree->dbh;
+		$dbh->commit;
 	}
 }
 else {
@@ -87,7 +168,6 @@ sub traverse {
 	my ( $tokens, $parent, %seen ) = @_;
 	no warnings 'recursion';
 	my $max = length($tokens) - 1;
-	$log->debug("going to tokenize ".($max+1)." characters");
 	
 	# split tokens into clades, traverse
 	my ( $depth, $label, $clade, @clades ) = ( 0, '', '' );
@@ -98,7 +178,6 @@ sub traverse {
 		
 		# have completed a clade, store it
 		if ( ( $t eq ',' ^ $t eq ')' ) && $depth == 1 ) {
-			$log->debug("completed clade at token '$t', index $i");		
 			push @clades, $clade;
 			$clade = '';
 		}
@@ -118,8 +197,7 @@ sub traverse {
 		$depth-- if $t eq ')';		
 	}
 	print_branch( $label, $parent ) unless $seen{$label}++;
-	push @clades, $clade if $clade;
-	$log->debug("going to recurse into ".scalar(@clades)." clades");
+	push @clades, $clade if $clade;	
 	traverse( $_, $label, %seen ) for @clades;
 }
 
@@ -144,6 +222,7 @@ sub print_branch {
 		$idcache{$child} = $idcounter++ unless $idcache{$child};
 		doprint($idcache{$child},1,$child,$length);
 	}
+	$log->info("wrote node $idcounter") unless $idcounter % 1000;
 }
 
 sub doprint {
