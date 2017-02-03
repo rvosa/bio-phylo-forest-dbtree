@@ -47,9 +47,10 @@ if ( $megatree ) {
 
 # start reading the phylotree spreadsheet
 sub read_tree {
-	open my $fh, '<', $infile or die $!;
-	my ( $depth, @path );
+	my @path = qw(root);
+	print_branch(@path);
 	my $line = 1;
+	open my $fh, '<', $infile or die $!;
 	LINE: while(<$fh>) {
 
 		# compute depth of current line
@@ -58,7 +59,7 @@ sub read_tree {
 		my @line = split /\t/, $_;
 		FIELD: for my $i ( 0 .. $#line ) {
 			if ( $line[$i] ) {
-				$d = $i;
+				$d = $i + 1;
 				last FIELD;	
 			}
 		}
@@ -70,24 +71,16 @@ sub read_tree {
 	
 		# update topology
 		$path[$d] = $label;
-	
-		# node is root
-		if ( not defined $depth ) {
-			$depth = $d;
-			print_branch( $label );
+
+		# find focal node
+		my $parent;
+		PARENT: for ( my $i = $d - 1; $i >= 0; $i-- ) {
+			if ( $path[$i] ) {
+				$parent = $path[$i];
+				last PARENT;
+			}
 		}
-		else {
-	
-			# find focal node
-			my $parent;
-			PARENT: for ( my $i = $d - 1; $i >= 0; $i-- ) {
-				if ( $path[$i] ) {
-					$parent = $path[$i];
-					last PARENT;
-				}
-			}			
-			print_branch( $label => $parent );
-		}
+		print_branch( $label => $parent );
 		$line++;
 	}
 }
