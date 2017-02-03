@@ -180,8 +180,12 @@ sub _index {
 		$counter = \$i;
 	}
 	$self->update({ 'left' => $$counter, 'height' => $height });
-	for my $child ( @{ $self->get_children } ) {
+	my @c = @{ $self->get_children };
+	for my $child ( @c ) {
 		$child->_index($counter, $height);
+	}
+	if ( @c ) {
+		$$counter = $$counter + 1;
 	}
 	$self->update({ 'right' => $$counter });
 }
