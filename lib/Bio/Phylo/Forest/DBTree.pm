@@ -38,7 +38,7 @@ sub create {
 	my $file  = shift;
 	my $sqlite3 = shift || 'sqlite3';
 	my $command = do { local $/; <DATA> };
-	system("echo '$command' | sqlite3 $file") == 0 or die 'Create failed!';
+	system("echo '$command' | sqlite3 '$file'") == 0 or die 'Create failed!';
 }
 
 sub persist {
