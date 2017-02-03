@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Pod::Usage;
 use Getopt::Long;
 use Bio::Phylo::Forest::DBTree;
 use Bio::Phylo::Util::Logger ':levels';
@@ -18,13 +19,99 @@ GetOptions(
 	'list=s'   => \$list,
 	'tabular'  => \$tabular,
 	'relabel'  => \$relabel,
+	'help'     => sub { pod2usage() },
+	'man'      => sub { pod2usage(1) },
 );
+
+=head1 NAME
+
+megatree-pruner - Given a list of taxa, returns subtree from a database
+
+=head1 SYNOPSIS
+
+    megatree-pruner -d <file> -i <file> [-l <list>] [-trvhm]
+
+=head1 OPTIONS
+
+=over
+
+=item B<< -d <file> >> or B<< -dbfile <file> >>
+
+Location of a database file, compatible with sqlite3, that has been produced by one of the
+megatree-*-loader scripts.
+
+=item B<< -i <file> >> or B<< -infile <file> >>
+
+Input file containing a list of taxon names that occur in the tree, one name per line. 
+These are the taxa that are retained in the subtree that is produced. The alternate to 
+this is the C<-l> option, which is a list of names on the command line.
+
+=item B<< -l <list> >> or B<< -list <list> >>
+
+Input list of taxon names that occur in the tree, comma separated. These are the taxa that 
+are retained in the subtree that is produced. The alternate to this is the C<-i> option, 
+which is an input file that contains a list of names on the command line.
+
+=item B<-t> or B<-tabular>
+
+Optional.
+
+With this option, instead of producing a Newick-formatted tree description (which is the
+default), a tab-separated table that describes the tree is produced.
+
+=item B<-r> or B<-relabel>
+
+Optional.
+
+With this option, internal nodes are relabeled in the output such that they become names
+of the format C<nXXX>, where XXX is the primary key (i.e. an integer ID) of the node in
+the database.
+
+=item B<-v> or B<-verbose>
+
+Optional.
+
+With this option, more feedback messages are written during processing. This option can be
+used multiple times, which increases the verbosity further.
+
+=item B<-h> or B<-help>
+
+Optional.
+
+Prints help message / documentation.
+
+=item B<-m> or B<-man>
+
+Optional.
+
+Prints manual page. Additional information is available in the documentation, i.e.
+C<perldoc megatree-pruner>
+
+=back
+
+=head1 DESCRIPTION
+
+This program produces the subtree for the taxa provided as input from a previously 
+produced database. As such, the functionality is roughly similar to extracting the 'common
+tree' from the NCBI taxonomy, which is a common operation in phylogenomics and related
+fields.
+
+The input names can be provided either as a text file (the B<-i> argument) or as a comma-
+separated list on the command line (the B<-l> argument). The names in the file must match
+those in the database exactly, i.e. there is no fussy matching. Any names not found in the
+database are skipped, and a warning message will be emitted.
+
+The output that is produced is either a Newick-formatted tree string, or a tab-separated
+table (which is recognized and readable by L<Bio::Phylo> as the C<adjacency> format).
+
+=cut
 
 # instantiate helper objects
 my $intree   = Bio::Phylo::Forest::DBTree->connect($dbfile);
 my $log      = Bio::Phylo::Util::Logger->new(
 	'-level' => $verbosity,
 	'-class' => 'main',
+	'-style' => 'simple',
 );
 
 # read input list, fetch nodes
