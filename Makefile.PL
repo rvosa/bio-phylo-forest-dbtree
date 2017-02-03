@@ -4,10 +4,15 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %parms = (
-    'NAME'         => 'Bio-Phylo-Megatree',
+    'NAME'         => 'Bio-Phylo-Forest-DBTree',
     'AUTHOR'       => 'Rutger Vos',
-    'EXE_FILES'    => [ 'script/make_megatree' ],
-    'VERSION_FROM' => 'lib/Megatree.pm',
+    'EXE_FILES'    => [
+        'script/megatree-loader',
+        'script/megatree-ncbi-loader',
+        'script/megatree-phylotree-loader',
+        'script/megatree-pruner'
+    ],
+    'VERSION_FROM' => 'lib/Bio/Phylo/Forest/DBTree.pm',
     'LICENSE'      => 'perl',
     'ABSTRACT'     => 'DBIx::Class-backed, Bio::Phylo-like API for large phylogenies',
     'PREREQ_PM'    => {
