@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Pod::Usage;
 use Getopt::Long;
 use Bio::Phylo::Forest::DBTree;
 use Bio::Phylo::Util::Logger ':levels';
@@ -9,11 +10,74 @@ use Bio::Phylo::Util::Logger ':levels';
 my $verbosity = WARN;
 my ( $infile, $dbfile );
 GetOptions(
-	'verbose+' => \$verbosity,
 	'infile=s' => \$infile,
 	'dbfile=s' => \$dbfile,
+	'verbose+' => \$verbosity,	
+	'help'     => sub { pod2usage() },
+	'man'      => sub { pod2usage(1) },		
 );
-die "Usage: $0 -i <infile> [-d <dbfile>] [-v]\n" if not $infile;
+pod2usage() if not $infile;
+
+=head1 NAME
+
+megatree-phylotree-loader - Loads a tree in the format of L<PhyloTree.org>
+
+=head1 SYNOPSIS
+
+    megatree-loader -i <file> [-d <file>] [-vhm]
+
+=head1 OPTIONS
+
+=over
+
+=item B<< -i <file> >> or B<< -infile <file> >>
+
+Input tree file, in the spreadsheet format as produced by L<PhyloTree.org>, e.g.
+C<PhyloTree Build 17.txt>.
+
+=item B<< -d <file> >> or B<< -dbfile <file> >>
+
+Optional.
+
+Location of a database file, compatible with sqlite3, which will be produced. This file
+can not yet exist. If it does, an error message will be emitted and the program will quit.
+
+If this argument is not provided, the tree topology will be emitted as a comma-separated 
+spreadsheet. (In principle, this spreadsheet could subsequently be loaded into sqlite3
+and then be further indexed by the API.)
+
+=item B<-v> or B<-verbose>
+
+Optional.
+
+With this option, more feedback messages are written during processing. This option can be
+used multiple times, which increases the verbosity further.
+
+=item B<-h> or B<-help>
+
+Optional.
+
+Prints help message / documentation.
+
+=item B<-m> or B<-man>
+
+Optional.
+
+Prints manual page. Additional information is available in the documentation, i.e.
+C<perldoc megatree-phylotree-loader>
+
+=back
+
+=head1 DESCRIPTION
+
+This program produces a database file or a CSV spreadsheet from dump of a haplotype tree
+as emitted by L<PhyloTree.org>. Such a database provides much quicker random access to 
+immutable trees, such as NRY and mtDNA haplotype trees. The example trees that are 
+referred to by the release of L<Bio::Phylo::Forest::DBTree> have been produced in this 
+way. They can be accessed by an API that is compatible with L<Bio::Phylo>, but much more 
+scalable. An example of such API usage is presented by the L<megatree-pruner> script.
+
+=cut
 
 # instantiate helper objects
 my $log = Bio::Phylo::Util::Logger->new(
