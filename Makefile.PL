@@ -4,7 +4,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %parms = (
-    'NAME'         => 'Bio-Phylo-Forest-DBTree',
+    'NAME'         => 'Bio::Phylo::Forest::DBTree',
     'AUTHOR'       => 'Rutger Vos',
     'EXE_FILES'    => [
         'script/megatree-loader',
