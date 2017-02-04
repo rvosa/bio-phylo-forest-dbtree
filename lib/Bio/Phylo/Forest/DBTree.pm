@@ -14,6 +14,95 @@ my $DBH;
 my $fac = Bio::Phylo::Factory->new;
 our $VERSION = '0.1';
 
+=head1 NAME
+
+Bio::Phylo::Forest::DBTree - Phylogenetic database as a tree object
+
+=head1 SYNOPSIS
+
+ use Bio::Phylo::Forest::DBTree;
+ 
+ # connect to the Green Genes tree
+ my $file = 'gg_13_5_otus_99_annotated.db';
+ my $dbtree = Bio::Phylo::Forest::DBTree->connect($file);
+
+ # $dbtree can be used as a Bio::Phylo::Forest::Tree object,
+ # and the node objects that are returned can be used as
+ # Bio::Phylo::Forest::Node objects
+ my $root = $dbtree->get_root;
+
+=head1 DESCRIPTION
+
+This package provides the functionality to handle very large phylogenies (examples: the
+NCBI taxonomy, the Green Genes tree) as if they are L<Bio::Phylo> tree objects, with all 
+the possibilities for traversal, computation, serialization, and visualization, but stored
+in a SQLite database. These databases are single files, so that they can be easily shared.
+Some useful database files are available here: 
+https://figshare.com/account/home#/projects/18808
+
+To make new tree databases, a number of scripts are provided with the distribution of this
+package:
+
+=over
+
+=item * C<megatree-loader> Loads a very large Newick tree into a database.
+
+=item * C<megatree-ncbi-loader> Loads the NCBI taxonomy dump into a database.
+
+=item * C<megatree-phylotree-loader> Loads a tree in the format of L<http://phylotree.org>
+into a database.
+
+=back
+
+As an example of interacting with a database tree, the script C<megatree-pruner> can be
+used to extract subtrees from a database.
+
+=head1 DATABASE METHODS
+
+The following methods deal with the database as a whole: creating a new database, 
+connecting to an existing one, persisting a tree in a database and extracting one as a
+mutable, in-memory object.
+
+=head2 create()
+
+Creates a SQLite database file in the provided location. Usage:
+
+  use Bio::Phylo::Forest::DBTree;
+  
+  # second argument is optional
+  Bio::Phylo::Forest::DBTree->create( $file, '/opt/local/bin/sqlite3' );
+
+The first argument is the location where the database file is going to be created. The
+second argument is optional, and provides the location of the C<sqlite3> executable that
+is used to create the database. By default, the C<sqlite3> is simply found on the 
+C<$PATH>, but if it is installed in a non-standard location that location can be provided
+here. The database schema that is created corresponds to the following SQL statements:
+
+ create table node(
+   id int not null,
+   parent int,
+   left int,
+   right int,
+   name varchar(20),
+   length float,
+   height float,
+   primary key(id)
+ );
+ create index parent_idx on node(parent);
+ create index left_idx on node(left);
+ create index right_idx on node(right);
+ create index name_idx on node(name);
+
+=cut
+
+sub create {
+	my $class = shift;
+	my $file  = shift;
+	my $sqlite3 = shift || 'sqlite3';
+	my $command = do { local $/; <DATA> };
+	system("echo '$command' | sqlite3 '$file'") == 0 or die 'Create failed!';
+}
+
 =head2 connect()
 
 Connects to a SQLite database file, returns the connection as a 
@@ -48,45 +137,23 @@ sub connect {
 	return $SINGLETON;
 }
 
-=head2 create()
+=head2 persist()
 
-Creates a SQLite database file in the provided location. Usage:
+Persist a phylogenetic tree object (a subclass of L<Bio::Phylo::Forest::Tree>) into a 
+newly created database file. Usage:
 
-  use Bio::Phylo::Forest::DBTree;
-  
-  # second argument is optional
-  Bio::Phylo::Forest::DBTree->create( $file, '/opt/local/bin/sqlite3' );
+  use Bio::Phylo::Forest::DBTree;  
+  my $dbtree = Bio::Phylo::Forest::DBTree->persist(
+      -file => $file,
+      -tree => $tree,
+  );
 
-The first argument is the location where the database file is going to be created. The
-second argument is optional, and provides the location of the C<sqlite3> executable that
-is used to create the database. By default, the C<sqlite3> is simply found on the 
-C<$PATH>, but if it is installed in a non-standard location that location can be provided
-here. The database schema that is created corresponds to the following SQL statements:
-
- create table node(
- 	id int not null,
- 	parent int,
- 	left int,
- 	right int,
- 	name varchar(20),
- 	length float,
- 	height float,
- 	primary key(id)
- );
- create index parent_idx on node(parent);
- create index left_idx on node(left);
- create index right_idx on node(right);
- create index name_idx on node(name);
+This method first create a database at the location specified by C<$file> by making a call
+to the C<create()> method. Subsequently, the C<$tree> object is traversed from root to 
+tips and inserted in the newly created database. Finally, the handle to this database is
+returned, i.e. a C<Bio::Phylo::Forest::DBTree> object.
 
 =cut
-
-sub create {
-	my $class = shift;
-	my $file  = shift;
-	my $sqlite3 = shift || 'sqlite3';
-	my $command = do { local $/; <DATA> };
-	system("echo '$command' | sqlite3 '$file'") == 0 or die 'Create failed!';
-}
 
 sub persist {
 	my ( $class, %args ) = @_;
@@ -145,7 +212,16 @@ sub persist {
 	return $db;
 }
 
-sub make_mutable {
+=head2 extract()
+
+Extracts a tree from a database. The returned tree is an in-memory object. Hence, this is
+an expensive operation that is best avoided as much as possible. Usage:
+
+ my $tree = $dbtree->extract;
+
+=cut
+
+sub extract {
 	my $self = shift;
 	my $tree = $fac->create_tree;
 	my $root = $self->get_root;
@@ -179,6 +255,31 @@ sub make_mutable {
 	}
 }
 
+=head2 dbh()
+
+Returns the underlying handle through which SQL statements can be executed directly on the
+database. This is a L<DBD::SQLite> object. Usage:
+
+ my $dbh = $dbtree->dbh;
+
+=cut
+
+sub dbh { $DBH }
+
+=head1 TREE METHODS
+
+The following methods are implemented here to override methods of the same name in the
+L<Bio::Phylo> hierarchy so that the tree database is accessed more efficiently than
+otherwise would be the case.
+
+=head2 get_root()
+
+Returns the root of the tree, i.e. a L<Bio::Phylo::Forest::DBTree::Result::Node> object,
+which is a subclass of L<Bio::Phylo::Forest::Node>. Usage:
+
+ my $root = $dbtree->get_root;
+
+=cut
 
 sub get_root { 
 	shift->_rs->search(
@@ -190,12 +291,40 @@ sub get_root {
 	)->single 
 }
 
+=head2 get_id()
+
+Returns a dummy ID, an integer. Usage:
+
+ my $id = $dbtree->get_id;
+
+=cut
+
 sub get_id { 0 }
+
+=head2 get_by_name()
+
+Returns the first node object that has the provided name. Usage:
+
+ my $node = $dbtree->get_by_name( 'Homo sapiens' );
+
+=cut
 
 sub get_by_name {
 	my ( $self, $name ) = @_;
 	return $self->_rs->search({ 'name' => $name })->single;
 }
+
+=head2 visit()
+
+Given a code reference, visits all the nodes in the tree and executes the code on the 
+focal node. Usage:
+
+ $dbtree->visit(sub{
+     my $node = shift;
+     print $node->name, "\n"; 
+ });
+
+=cut
 
 sub visit {
 	my ( $self, $code ) = @_;
@@ -205,8 +334,6 @@ sub visit {
 	}
 	return $self;
 }
-
-sub dbh { $DBH }
 
 sub _rs { shift->resultset('Node') }
 
