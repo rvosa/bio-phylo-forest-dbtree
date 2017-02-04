@@ -14,6 +14,21 @@ my $DBH;
 my $fac = Bio::Phylo::Factory->new;
 our $VERSION = '0.1';
 
+=head2 connect()
+
+Connects to a SQLite database file, returns the connection as a 
+C<Bio::Phylo::Forest::DBTree> object. Usage:
+
+ use Bio::Phylo::Forest::DBTree;
+ my $dbtree = Bio::Phylo::Forest::DBTree->connect($file);
+
+The argument is a file name. If the file exists, a L<DBD::SQLite> database handle to that
+file is returned. If the file does not exist, a new database is created in that location,
+and subsequently the handle to that newly created database is returned. The creation of 
+the database is handled by the C<create()> method (see below).
+
+=cut
+
 sub connect {
 	my $class = shift;
 	my $file  = shift;
@@ -32,6 +47,38 @@ sub connect {
 	}
 	return $SINGLETON;
 }
+
+=head2 create()
+
+Creates a SQLite database file in the provided location. Usage:
+
+  use Bio::Phylo::Forest::DBTree;
+  
+  # second argument is optional
+  Bio::Phylo::Forest::DBTree->create( $file, '/opt/local/bin/sqlite3' );
+
+The first argument is the location where the database file is going to be created. The
+second argument is optional, and provides the location of the C<sqlite3> executable that
+is used to create the database. By default, the C<sqlite3> is simply found on the 
+C<$PATH>, but if it is installed in a non-standard location that location can be provided
+here. The database schema that is created corresponds to the following SQL statements:
+
+ create table node(
+ 	id int not null,
+ 	parent int,
+ 	left int,
+ 	right int,
+ 	name varchar(20),
+ 	length float,
+ 	height float,
+ 	primary key(id)
+ );
+ create index parent_idx on node(parent);
+ create index left_idx on node(left);
+ create index right_idx on node(right);
+ create index name_idx on node(name);
+
+=cut
 
 sub create {
 	my $class = shift;
