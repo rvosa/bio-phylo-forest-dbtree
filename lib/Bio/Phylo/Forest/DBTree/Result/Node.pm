@@ -256,7 +256,7 @@ sub get_mrca {
 			]
 		},
 		{
-			'order_by' => 'left',
+			'order_by' => 'right',
 			'rows'     => 1,
 		}
 	)->single;			
@@ -340,7 +340,9 @@ sub calc_patristic_distance {
 	my ( $self, $other ) = @_;
 	my $mrca = $self->get_mrca($other);
 	my $mh = $mrca->height;
-	return ( $self->height - $mh ) + ( $other->height - $mh );
+	my $sh = $self->height;
+	my $oh = $other->height;
+	return ( $sh - $mh ) + ( $oh - $mh );
 }
 
 1;
