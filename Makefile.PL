@@ -31,8 +31,8 @@ if ( $ExtUtils::MakeMaker::VERSION ge '6.46' ) {
     $parms{META_MERGE} = {
         resources => {
             homepage    => 'http://biophylo.blogspot.com/',
-            bugtracker  => 'https://github.com/rvosa/bio-phylo-megatree/issues',
-            repository  => 'git://github.com/rvosa/bio-phylo-megatree.git',
+            bugtracker  => 'https://github.com/rvosa/bio-phylo-forest-dbtree/issues',
+            repository  => 'git://github.com/rvosa/bio-phylo-forest-dbtree.git',
             license     => 'http://dev.perl.org/licenses/',
             MailingList => 'mailto:bio-phylo@googlegroups.com',
         },
