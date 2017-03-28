@@ -1,0 +1,82 @@
+A00	 L1086  L1159  L1284																
+																	
+A0'1'2'3'4	 L1085  L1130  L1155																
+																	
+	A0	 V148  V166  L896  L991															
+																	
+A1'2'3'4		 V168  V171  P305															
+																	
+		A1	 M31  P82  V4														
+																	
+	A2'3'4		 P108  V221														
+																	
+			A2'3	 L419  PK1													
+																	
+				A2	 V50  L602												
+																	
+				A3	 M32												
+																	
+	A4=BCDEF			 M42  P97													
+																	
+				B	 M60  M181  V244												
+																	
+			CDEF		 M168												
+																	
+					DE	 M145  M203											
+																	
+						D	 M174  CTS94  JST021355										
+																	
+						E	 M96  M40  P29										
+																	
+					CF	 P143											
+																	
+						C	 M130  M216										
+																	
+						F	 M89  M213  P14										
+																	
+					GHIJKLT			 F1329									
+																	
+								G	 M201  P257								
+																	
+							HIJKLT		 M578								
+																	
+									H	 L901  M3035							
+																	
+								IJKLT		 M522  M523							
+																	
+										IJ	 M429  P126						
+																	
+											I	 M170  M258  U179					
+																	
+											J	 M304  P209					
+																	
+										KLT	 M9						
+																	
+											K	 M526					
+																	
+												MP	 P331  L405				
+																	
+													M	 P397  P399  PR2099			
+																	
+													P	 P295			
+																	
+														QR	 M45  M74		
+																	
+															Q	 M242	
+																	
+															R	 M207	
+																	
+												X	 F549  F650  M2308				
+																	
+													NO	 M214			
+																	
+														N	 M231		
+																	
+														O	 M175  P186		
+																	
+											LT	 P326  L811					
+																	
+												L	 M20				
+																	
+												T	 M184				
+																	
