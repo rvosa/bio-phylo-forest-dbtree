@@ -2,3 +2,5 @@
 .travis.yml
 data/*
 .git/*
+MANIFEST.skip
+Makefile
