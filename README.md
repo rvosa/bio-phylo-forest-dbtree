@@ -2,6 +2,12 @@ Bio::Phylo::Forest::DBTree
 ==========================
 An object-oriented API to operate on very large phylogenies stored in portable databases
 
+Release
+-------
+The most recent release is: 
+
+[![DOI](https://zenodo.org/badge/8080160.svg)](https://zenodo.org/badge/latestdoi/8080160)
+
 Requires
 --------
 * Bio::Phylo v0.52 or later
