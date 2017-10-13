@@ -4,7 +4,8 @@ An object-oriented API to operate on very large phylogenies stored in portable d
 
 Release
 -------
-The most recent tagged release is: 
+The most recent release is: 
+
 [![DOI](https://zenodo.org/badge/8080160.svg)](https://zenodo.org/badge/latestdoi/8080160)
 
 Requires
