@@ -17,8 +17,8 @@ Requires
 
 Installation
 ------------
-This package can be installed in the standard ways, e.g. using the `ExtUtils::MakeMaker`
-workflow:
+This package can be installed in the standard ways, e.g. after downloading from this 
+repository, using the `ExtUtils::MakeMaker` workflow:
 
     $ perl Makefile.PL
     $ make
@@ -28,6 +28,11 @@ Alternatively, the `cpanm` workflow can be used to install directly from github,
 
     $ sudo cpanm git://github.com/rvosa/bio-phylo-forest-dbtree.git
 
+Or, opting for the most recent [release](http://search.cpan.org/dist/Bio-Phylo-Forest-DBTree/)
+from CPAN, using:
+
+    $ sudo cpanm Bio::Phylo::Forest::DBTree
+
 BUGS
 ----
 Please report any bugs or feature requests on the GitHub bug tracker:
@@ -36,9 +41,13 @@ https://github.com/rvosa/bio-phylo-forest-dbtree/issues
 
 BUILD STATUS
 ------------
-Currently, the build status at Travis is:
+Currently, the build status of the head revision at Travis is:
 
 [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
+
+The test results of the CPAN releases are here:
+
+http://www.cpantesters.org/distro/B/Bio-Phylo-Forest-DBTree.html
 
 COPYRIGHT & LICENSE
 -------------------
