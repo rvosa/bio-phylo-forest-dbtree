@@ -10,10 +10,10 @@ The most recent release is:
 
 Requires
 --------
-* Bio::Phylo v0.52 or later
-* DBIx::Class
-* DBD::SQLite
-* An installation of `sqlite3`
+* [Bio::Phylo](http://search.cpan.org/dist/Bio-Phylo/)
+* [DBIx::Class](http://search.cpan.org/dist/DBIx-Class/)
+* [DBD::SQLite](http://search.cpan.org/dist/DBD-SQLite/)
+* An installation of [sqlite3](https://www.sqlite.org/)
 
 Installation
 ------------
