@@ -39,3 +39,17 @@ BUILD STATUS
 Currently, the build status at Travis is:
 
 [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
+
+SEE ALSO
+--------
+Several curated, large phylogenies released by ongoing projects are made available as
+database files that this distribution can operate on. These are:
+- PhyloTree [Oven2009]         - http://doi.org/10.6084/m9.figshare.4620757.v1
+- D-Place [Kirby2016]          - http://doi.org/10.6084/m9.figshare.4620217.v1
+- NCBI taxonomy [Federhen2011] - http://doi.org/10.6084/m9.figshare.4620733.v1
+- Green Genes [Desantis2006]   - http://doi.org/10.6084/m9.figshare.4620214.v1
+
+[Oven2009]: http://doi.org/10.1002/humu.20921
+[Kirby2016]: http://doi.org/10.1371/journal.pone.0158391
+[Federhen2011]: http://doi.org/10.1093/nar/gkr1178
+[Desantis2006]: http://doi.org/10.1128/AEM.03006-05
