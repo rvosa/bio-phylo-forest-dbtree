@@ -40,6 +40,14 @@ Currently, the build status at Travis is:
 
 [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
 
+COPYRIGHT & LICENSE
+-------------------
+Copyright 2013-2017 Rutger Vos, All Rights Reserved. This program is free software; 
+you can redistribute it and/or modify it under the same terms as Perl itself, i.e.
+a choice between the following licenses:
+- [The Artistic License](COPYING)
+- [GNU General Public License v3.0](LICENSE)
+
 SEE ALSO
 --------
 Several curated, large phylogenies released by ongoing projects are made available as
