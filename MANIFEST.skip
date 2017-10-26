@@ -3,3 +3,4 @@
 data/*
 .git/*
 MANIFEST.skip
+MYMETA.*
