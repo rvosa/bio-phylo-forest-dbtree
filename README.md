@@ -6,7 +6,7 @@ Release
 -------
 The most recent release is: 
 
-[![DOI](https://zenodo.org/badge/8080160.svg)](https://zenodo.org/badge/latestdoi/8080160)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1035856.svg)](https://doi.org/10.5281/zenodo.1035856)
 
 Requires
 --------
