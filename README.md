@@ -11,6 +11,7 @@ An example mapping of a tree topology to a database table. With this mapping, se
 topological queries can be performed quickly.
 
 ```sql
+-- select the most recent common ancestor of C and F
 select * from node as MRCA, node as C, node as F \
   where C.name='C' and F.name='F' \
   and MRCA.left < min(C.left,F.left) \
