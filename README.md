@@ -2,8 +2,8 @@
 [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
 ![CPAN](https://img.shields.io/cpan/l/Bio-Phylo-Forest-DBTree?color=success)
 
-DBTree - a programmable API for very large phylogenies in portable databases
-============================================================================
+DBTree - toolkit for very large phylogenies in portable databases
+=================================================================
 
 Installation
 ------------
