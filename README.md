@@ -1,3 +1,7 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1035856.svg)](https://doi.org/10.5281/zenodo.1035856)
+[![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
+![CPAN](https://img.shields.io/cpan/l/Bio-Phylo-Forest-DBTree?color=success)
+
 Bio::Phylo::Forest::DBTree
 ==========================
 An object-oriented API to operate on very large phylogenies stored in portable databases
@@ -51,7 +55,7 @@ http://www.cpantesters.org/distro/B/Bio-Phylo-Forest-DBTree.html
 
 COPYRIGHT & LICENSE
 -------------------
-Copyright 2013-2017 Rutger Vos, All Rights Reserved. This program is free software; 
+Copyright 2013-2019 Rutger Vos, All Rights Reserved. This program is free software; 
 you can redistribute it and/or modify it under the same terms as Perl itself, i.e.
 a choice between the following licenses:
 - [The Artistic License](COPYING)
