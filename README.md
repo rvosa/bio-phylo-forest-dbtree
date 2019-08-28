@@ -17,6 +17,12 @@ select MRCA.* from node as MRCA, node as C, node as F
   and MRCA.left < min(C.left,F.left) 
   and MRCA.right > max(C.right,F.right)
   order by MRCA.left desc limit 1;
+ 
+-- select the descendants from node n4
+select DESC.* from node as DESC, node as MRCA 
+  where MRCA.name='n4' 
+  and DESC.left > MRCA.left 
+  and DESC.right < MRCA.right;
 ```
 
 Installation
