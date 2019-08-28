@@ -7,8 +7,10 @@ DBTree - toolkit for megatrees in portable databases
 
 ![Figure 1](docs/fig1.svg)
 
-An example mapping of a tree topology to a database table. With this mapping, several
-topological queries can be performed quickly.
+An example mapping of a tree topology to a database table. The mapping is
+created with `megatree-loader -i infile.tre -d outfile.db` With this mapping, 
+several topological queries can be performed quickly when loading the output
+file in [sqlite3][10] (or the excellent [SQLiteBrowser][11]).
 
 ```sql
 -- select the most recent common ancestor of C and F
@@ -124,3 +126,5 @@ database files that this distribution can operate on. These are:
 [7]: https://doi.org/10.5281/zenodo.1035856
 [8]: https://github.com/rvosa/bio-phylo-forest-dbtree
 [9]: https://metacpan.org/pod/distribution/App-cpanminus/bin/cpanm
+[10]: https://www.sqlite.org/index.html
+[11]: https://sqlitebrowser.org/
