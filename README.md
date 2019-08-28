@@ -6,30 +6,62 @@ Bio::Phylo::Forest::DBTree
 ==========================
 An object-oriented API to operate on very large phylogenies stored in portable databases
 
-Requires
---------
-* [Bio::Phylo](http://search.cpan.org/dist/Bio-Phylo/)
-* [DBIx::Class](http://search.cpan.org/dist/DBIx-Class/)
-* [DBD::SQLite](http://search.cpan.org/dist/DBD-SQLite/)
-* An installation of [sqlite3](https://www.sqlite.org/)
-
 Installation
 ------------
-This package can be installed in the standard ways, e.g. after downloading from this 
-repository, using the `ExtUtils::MakeMaker` workflow:
 
-    $ perl Makefile.PL
-    $ make
-    $ sudo make install
+### From the Comprehensive Perl Archive Network (CPAN)
 
-Alternatively, the `cpanm` workflow can be used to install directly from github, i.e.
+On many Linux-like operating systems as well as MacOSX, the entire installation completes
+with this single command:
 
-    $ sudo cpanm git://github.com/rvosa/bio-phylo-forest-dbtree.git
+    sudo cpanm Bio::Phylo::Forest::DBTree
 
-Or, opting for the most recent [release](http://search.cpan.org/dist/Bio-Phylo-Forest-DBTree/)
-from CPAN, using:
+- **Advantages** - it's simple, all prerequisites are automatically installed. You will
+  obtain the [latest stable release][5] on CPAN, which is [amply tested][6].
+- **Disadvantages** - you will likely get code that is a lot older than the latest work
+  on this package. Since the prerequisites are also installed from CPAN (if you don't
+  have them already) they same applies to those: they might be old.
 
-    $ sudo cpanm Bio::Phylo::Forest::DBTree
+### From GitHub
+
+On many Linux-like operating systems as well as MacOSX, you can instal the latest code
+from the [repository][8] with this single command:
+
+    sudo cpanm git://github.com/rvosa/bio-phylo-forest-dbtree.git
+
+- **Advantages** - it's simply, all prerequisites are automatically installed. You will
+  get the latest code, including any new features and bug fixes.
+- **Disadvantages** - you will install recent code, which might include new bugs or
+  other features, in your system folders.
+
+### From an archive snapshot
+
+This is the approach you might take if you want complete control over the installation,
+and/or if there is a specific archive (such as zenodo release [10.5281/zenodo.1035856][7])
+you wish to install or verify. 
+
+This approach starts by installing the prerequisites manually:
+
+    # do this only if you don't already have these installed somewhere
+    sudo cpanm Bio::Phylo
+    sudo cpanm DBIx::Class
+    sudo cpanm DBD::SQLite
+
+Then, unpack the archive, move into the top level folder, and issue the build commands:
+
+    perl Makefile.PL
+    make
+    make test
+
+Finally, you can opt to install the built products (using `sudo make install`), or
+keep them in the present location, which would require you to update two environment
+variables:
+
+    # add the script folder inside the archive to the search path for executables
+    export PATH="$PATH":`pwd`/script
+    
+    # add the lib folder to the search path for perl libraries
+    export PERL5LIB="$PERL5LIB":`pwd`/lib
 
 Releases
 --------
@@ -41,7 +73,7 @@ of stability (but increasing order of up-to-datedness):
    are tested automatically on very many different computers, the results of which you 
    can verify at [cpantesters.org][6].
 2. **Versioned snapshots** are posted to Zenodo and assigned a DOI, the most recent of 
-   which is [10.5281/zenodo.1035856][7].
+   which is .
 3. **Current code** is available from the [git repository][8], though with this you run 
    the minor risk of installing untested features. If you go this route, the key thing 
    to look out for is whether the current build is passing all tests: 
