@@ -21,8 +21,7 @@ with this single command:
 - **Advantages** - it's simple, all prerequisites are automatically installed. You will
   obtain the [latest stable release][5] on CPAN, which is [amply tested][6].
 - **Disadvantages** - you will likely get code that is a lot older than the latest work
-  on this package. Since the prerequisites are also installed from CPAN (if you don't
-  have them already) they same applies to those: they might be old.
+  on this package.
 
 ### 2. From GitHub
 
@@ -31,10 +30,10 @@ from the [repository][8] with this single command:
 
     sudo cpanm git://github.com/rvosa/bio-phylo-forest-dbtree.git
 
-- **Advantages** - it's simply, all prerequisites are automatically installed. You will
+- **Advantages** - it's simple, all prerequisites are automatically installed. You will
   get the latest code, including any new features and bug fixes.
-- **Disadvantages** - you will install recent code, which might include new bugs or
-  other features, in your system folders.
+- **Disadvantages** - you will install untested, recent code, which might include new bugs 
+  or other features, in your system folders.
 
 ### 3. From an archive snapshot
 
@@ -44,7 +43,7 @@ you wish to install or verify.
 
 This approach starts by installing the prerequisites manually:
 
-    # do this only if you don't already have these installed somewhere
+    # do this only if you don't already have these already
     sudo cpanm Bio::Phylo
     sudo cpanm DBIx::Class
     sudo cpanm DBD::SQLite
