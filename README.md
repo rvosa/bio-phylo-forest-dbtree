@@ -13,10 +13,10 @@ topological queries can be performed quickly.
 ```sql
 -- select the most recent common ancestor of C and F
 select MRCA.* from node as MRCA, node as C, node as F 
-  where C.name='C' and F.name='F' 
+  where C.name='E' and F.name='F' 
   and MRCA.left < min(C.left,F.left) 
   and MRCA.right > max(C.right,F.right)
-  order by MRCA.left asc limit 1;
+  order by MRCA.left desc limit 1;
 ```
 
 Installation
