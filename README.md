@@ -34,19 +34,18 @@ from CPAN, using:
 Releases
 --------
 
-This package is released through the following platforms, listed in decreasing order of
-stability (but increasing order of up-to-datedness):
+This package is released through the following platforms, listed in decreasing order 
+of stability (but increasing order of up-to-datedness):
 
-1. Stable, tested, polished releases are posted intermittently to the Comprehensive Perl Archive
-   Network, here: [B/Bio-Phylo-Forest-DBTree](https://metacpan.org/release/Bio-Phylo-Forest-DBTree).
-   The CPAN releases are tested on very many different computers, the results of which you
-   can verify at [cpantesters.org](http://www.cpantesters.org/distro/B/Bio-Phylo-Forest-DBTree.html)
-2. To accompany scholarly manuscripts, certain snapshots of the repository are posted to
-   Zenodo and assigned a DOI, the most recent of which is [10.5281/zenodo.1035856](https://doi.org/10.5281/zenodo.1035856)
-3. The [git repository](https://github.com/rvosa/bio-phylo-forest-dbtree) always contains the 
-   most recent code, though with this you run the minor risk of installing untested features.
-   If you go this route, the key thing to look out for is whether the current build is passing
-   all tests: [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
+1. **Tested releases** are posted intermittently to the [meta::cpan][5]. These releases 
+   are tested automatically on very many different computers, the results of which you 
+   can verify at [cpantesters.org][6].
+2. **Versioned snapshots** are posted to Zenodo and assigned a DOI, the most recent of 
+   which is [10.5281/zenodo.1035856][7].
+3. **Current code** is available from the [git repository][8], though with this you run 
+   the minor risk of installing untested features. If you go this route, the key thing 
+   to look out for is whether the current build is passing all tests: 
+   [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
 
 BUGS
 ----
@@ -74,3 +73,7 @@ database files that this distribution can operate on. These are:
 [2]: http://doi.org/10.1371/journal.pone.0158391
 [3]: http://doi.org/10.1093/nar/gkr1178
 [4]: http://doi.org/10.1128/AEM.03006-05
+[5]: https://metacpan.org/release/Bio-Phylo-Forest-DBTree
+[6]: http://www.cpantesters.org/distro/B/Bio-Phylo-Forest-DBTree.html
+[7]: https://doi.org/10.5281/zenodo.1035856
+[8]: https://github.com/rvosa/bio-phylo-forest-dbtree
