@@ -8,9 +8,12 @@ DBTree - toolkit for megatrees in portable databases
 ![Figure 1](docs/fig1.svg)
 
 An example mapping of a tree topology to a database table. The mapping is
-created with `megatree-loader -i infile.tre -d outfile.db` With this mapping, 
-several topological queries can be performed quickly when loading the output
-file in [sqlite3][10] (or the excellent [SQLiteBrowser][11]).
+created by processing a [Newick][12] tree file (infile.tre) as follows: 
+
+    megatree-loader -i infile.tre -d outfile.db 
+    
+With this mapping, several topological queries can be performed quickly when 
+loading the output file in [sqlite3][10] (or the excellent [SQLiteBrowser][11]).
 
 ```sql
 -- select the most recent common ancestor of C and F
@@ -128,3 +131,4 @@ database files that this distribution can operate on. These are:
 [9]: https://metacpan.org/pod/distribution/App-cpanminus/bin/cpanm
 [10]: https://www.sqlite.org/index.html
 [11]: https://sqlitebrowser.org/
+[12]: http://evolution.genetics.washington.edu/phylip/newicktree.html
