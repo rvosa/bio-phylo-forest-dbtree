@@ -19,10 +19,10 @@ select MRCA.* from node as MRCA, node as C, node as F
   order by MRCA.left desc limit 1;
  
 -- select the descendants from node n4
-select DESC.* from node as DESC, node as MRCA 
+select DESCENDANT.* from node as DESCENDANT, node as MRCA 
   where MRCA.name='n4' 
-  and DESC.left > MRCA.left 
-  and DESC.right < MRCA.right;
+  and DESCENDANT.left > MRCA.left 
+  and DESCENDANT.right < MRCA.right;
 ```
 
 Installation
