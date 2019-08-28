@@ -39,7 +39,9 @@ for controlling the installation (or for fetching, testing, uninstalling, etc.).
 On many Linux-like operating systems as well as MacOSX, the entire installation completes
 with this single command:
 
-    sudo cpanm Bio::Phylo::Forest::DBTree
+```bash
+sudo cpanm Bio::Phylo::Forest::DBTree
+```
 
 - **Advantages** - it's simple and all prerequisites are automatically installed. You will
   obtain the [latest stable release][5] from CPAN, which is [amply tested][6].
@@ -51,7 +53,9 @@ with this single command:
 On many Linux-like operating systems as well as MacOSX, you can install the latest code
 from the [repository][8] with this single command:
 
-    sudo cpanm git://github.com/rvosa/bio-phylo-forest-dbtree.git
+```bash
+sudo cpanm git://github.com/rvosa/bio-phylo-forest-dbtree.git
+```
 
 - **Advantages** - it's simple, all prerequisites are automatically installed. You will
   get the latest code, including any new features and bug fixes.
@@ -66,10 +70,12 @@ you wish to install or verify.
 
 This approach starts by installing the prerequisites manually:
 
+```bash
     # do this only if you don't already have these already
     sudo cpanm Bio::Phylo
     sudo cpanm DBIx::Class
     sudo cpanm DBD::SQLite
+```
 
 Then, unpack the archive, move into the top level folder, and issue the build commands:
 
