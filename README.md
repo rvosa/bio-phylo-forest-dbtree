@@ -18,9 +18,9 @@ select MRCA.* from node as MRCA, node as C, node as F
   and MRCA.right > max(C.right,F.right)
   order by MRCA.left desc limit 1;
  
--- select the descendants from node n4
+-- select the descendants from node n2
 select DESCENDANT.* from node as DESCENDANT, node as MRCA 
-  where MRCA.name='n4' 
+  where MRCA.name='n2' 
   and DESCENDANT.left > MRCA.left 
   and DESCENDANT.right < MRCA.right;
 ```
