@@ -5,6 +5,8 @@
 DBTree - toolkit for megatrees in portable databases
 ====================================================
 
+![Figure 1](docs/fig1.svg)
+
 Installation
 ------------
 
