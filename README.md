@@ -39,9 +39,7 @@ for controlling the installation (or for fetching, testing, uninstalling, etc.).
 On many Linux-like operating systems as well as MacOSX, the entire installation completes
 with this single command:
 
-```bash
-sudo cpanm Bio::Phylo::Forest::DBTree
-```
+    sudo cpanm Bio::Phylo::Forest::DBTree
 
 - **Advantages** - it's simple and all prerequisites are automatically installed. You will
   obtain the [latest stable release][5] from CPAN, which is [amply tested][6].
@@ -53,9 +51,7 @@ sudo cpanm Bio::Phylo::Forest::DBTree
 On many Linux-like operating systems as well as MacOSX, you can install the latest code
 from the [repository][8] with this single command:
 
-```bash
-sudo cpanm git://github.com/rvosa/bio-phylo-forest-dbtree.git
-```
+    sudo cpanm git://github.com/rvosa/bio-phylo-forest-dbtree.git
 
 - **Advantages** - it's simple, all prerequisites are automatically installed. You will
   get the latest code, including any new features and bug fixes.
@@ -71,27 +67,31 @@ you wish to install or verify.
 This approach starts by installing the prerequisites manually:
 
 ```bash
-    # do this only if you don't already have these already
-    sudo cpanm Bio::Phylo
-    sudo cpanm DBIx::Class
-    sudo cpanm DBD::SQLite
+# do this only if you don't already have these already
+sudo cpanm Bio::Phylo
+sudo cpanm DBIx::Class
+sudo cpanm DBD::SQLite
 ```
 
 Then, unpack the archive, move into the top level folder, and issue the build commands:
 
-    perl Makefile.PL
-    make
-    make test
+```bash
+perl Makefile.PL
+make
+make test
+```
 
 Finally, you can opt to install the built products (using `sudo make install`), or
 keep them in the present location, which would require you to update two environment
 variables:
 
-    # add the script folder inside the archive to the search path for executables
-    export PATH="$PATH":`pwd`/script
+```bash
+# add the script folder inside the archive to the search path for executables
+export PATH="$PATH":`pwd`/script
     
-    # add the lib folder to the search path for perl libraries
-    export PERL5LIB="$PERL5LIB":`pwd`/lib
+# add the lib folder to the search path for perl libraries
+export PERL5LIB="$PERL5LIB":`pwd`/lib
+```
 
 BUGS
 ----
