@@ -9,7 +9,10 @@ An object-oriented API to operate on very large phylogenies stored in portable d
 Installation
 ------------
 
-### From the Comprehensive Perl Archive Network (CPAN)
+The following installation instructions describe three different ways to install the
+package. Unless you know what you are doing, the first way is probably the best one.
+
+### 1. From the Comprehensive Perl Archive Network (CPAN)
 
 On many Linux-like operating systems as well as MacOSX, the entire installation completes
 with this single command:
@@ -22,7 +25,7 @@ with this single command:
   on this package. Since the prerequisites are also installed from CPAN (if you don't
   have them already) they same applies to those: they might be old.
 
-### From GitHub
+### 2. From GitHub
 
 On many Linux-like operating systems as well as MacOSX, you can instal the latest code
 from the [repository][8] with this single command:
@@ -34,7 +37,7 @@ from the [repository][8] with this single command:
 - **Disadvantages** - you will install recent code, which might include new bugs or
   other features, in your system folders.
 
-### From an archive snapshot
+### 3. From an archive snapshot
 
 This is the approach you might take if you want complete control over the installation,
 and/or if there is a specific archive (such as zenodo release [10.5281/zenodo.1035856][7])
@@ -62,22 +65,6 @@ variables:
     
     # add the lib folder to the search path for perl libraries
     export PERL5LIB="$PERL5LIB":`pwd`/lib
-
-Releases
---------
-
-This package is released through the following platforms, listed in decreasing order 
-of stability (but increasing order of up-to-datedness):
-
-1. **Tested releases** are posted intermittently to the [meta::cpan][5]. These releases 
-   are tested automatically on very many different computers, the results of which you 
-   can verify at [cpantesters.org][6].
-2. **Versioned snapshots** are posted to Zenodo and assigned a DOI, the most recent of 
-   which is .
-3. **Current code** is available from the [git repository][8], though with this you run 
-   the minor risk of installing untested features. If you go this route, the key thing 
-   to look out for is whether the current build is passing all tests: 
-   [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
 
 BUGS
 ----
