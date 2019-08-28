@@ -7,6 +7,17 @@ DBTree - toolkit for megatrees in portable databases
 
 ![Figure 1](docs/fig1.svg)
 
+An example mapping of a tree topology to a database table. With this mapping, several
+topological queries can be performed quickly.
+
+```{sql}
+select * from node as MRCA, node as C, node as F \
+  where C.name='C' and F.name='F' \
+  and MRCA.left < min(C.left,F.left) \
+  and MRCA.right > max(C.right,F.right) \
+  order by MRCA.left asc limit 1;
+```
+
 Installation
 ------------
 
