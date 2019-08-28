@@ -6,12 +6,6 @@ Bio::Phylo::Forest::DBTree
 ==========================
 An object-oriented API to operate on very large phylogenies stored in portable databases
 
-Release
--------
-The most recent release is: 
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1035856.svg)](https://doi.org/10.5281/zenodo.1035856)
-
 Requires
 --------
 * [Bio::Phylo](http://search.cpan.org/dist/Bio-Phylo/)
@@ -43,15 +37,19 @@ Please report any bugs or feature requests on the GitHub bug tracker:
 
 https://github.com/rvosa/bio-phylo-forest-dbtree/issues
 
-BUILD STATUS
-------------
-Currently, the build status of the head revision at Travis is:
+Releases
+--------
 
-[![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
-
-The test results of the CPAN releases are here:
-
-http://www.cpantesters.org/distro/B/Bio-Phylo-Forest-DBTree.html
+- Stable, tested, polished releases are posted intermittently to the Comprehensive Perl Archive
+  Network, here: [B/Bio-Phylo-Forest-DBTree](https://metacpan.org/release/Bio-Phylo-Forest-DBTree).
+  The CPAN releases are tested on very many different computers, the results of which you
+  can verify at [cpantesters.org](http://www.cpantesters.org/distro/B/Bio-Phylo-Forest-DBTree.html)
+- To accompany scholarly manuscripts, certain snapshots of the repository are posted to
+  Zenodo and assigned a DOI, the most recent of which is [10.5281/zenodo.1035856](https://doi.org/10.5281/zenodo.1035856)
+- The [git repository](https://github.com/rvosa/bio-phylo-forest-dbtree) always contains the 
+  most recent code, though with this you run the minor risk of installing untested features.
+  If you go this route, the key thing to look out for is whether the current build is passing
+  all tests: [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
 
 COPYRIGHT & LICENSE
 -------------------
