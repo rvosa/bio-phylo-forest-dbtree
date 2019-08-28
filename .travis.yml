@@ -5,3 +5,7 @@ perl:
   - "5.12"
   - "5.10"
   - "5.8"
+before_install:
+  - cpanm Bio::Phylo
+  - cpanm DBIx::Class
+  - cpanm DBD::SQLite
