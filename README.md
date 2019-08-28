@@ -43,12 +43,10 @@ you wish to install or verify.
 
 This approach starts by installing the prerequisites manually:
 
-```{bash}
-# do this only if you don't already have these already
-sudo cpanm Bio::Phylo
-sudo cpanm DBIx::Class
-sudo cpanm DBD::SQLite
-```
+    # do this only if you don't already have these already
+    sudo cpanm Bio::Phylo
+    sudo cpanm DBIx::Class
+    sudo cpanm DBD::SQLite
 
 Then, unpack the archive, move into the top level folder, and issue the build commands:
 
