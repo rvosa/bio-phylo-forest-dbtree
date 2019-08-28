@@ -10,6 +10,9 @@ Installation
 
 The following installation instructions describe three different ways to install the
 package. Unless you know what you are doing, the first way is probably the best one.
+Under any circumstance, it is probably a good idea to familiarize yourself with the
+capabilities of the [cpanm][9] package manager as it offers many more possibilities 
+for controlling the installation (or for fetching, testing, uninstalling, etc.).
 
 ### 1. From the Comprehensive Perl Archive Network (CPAN)
 
@@ -18,14 +21,14 @@ with this single command:
 
     sudo cpanm Bio::Phylo::Forest::DBTree
 
-- **Advantages** - it's simple, all prerequisites are automatically installed. You will
-  obtain the [latest stable release][5] on CPAN, which is [amply tested][6].
+- **Advantages** - it's simple and all prerequisites are automatically installed. You will
+  obtain the [latest stable release][5] from CPAN, which is [amply tested][6].
 - **Disadvantages** - you will likely get code that is a lot older than the latest work
   on this package.
 
 ### 2. From GitHub
 
-On many Linux-like operating systems as well as MacOSX, you can instal the latest code
+On many Linux-like operating systems as well as MacOSX, you can install the latest code
 from the [repository][8] with this single command:
 
     sudo cpanm git://github.com/rvosa/bio-phylo-forest-dbtree.git
@@ -94,3 +97,4 @@ database files that this distribution can operate on. These are:
 [6]: http://www.cpantesters.org/distro/B/Bio-Phylo-Forest-DBTree.html
 [7]: https://doi.org/10.5281/zenodo.1035856
 [8]: https://github.com/rvosa/bio-phylo-forest-dbtree
+[9]: https://metacpan.org/pod/distribution/App-cpanminus/bin/cpanm
