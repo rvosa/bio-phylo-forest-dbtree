@@ -31,25 +31,27 @@ from CPAN, using:
 
     $ sudo cpanm Bio::Phylo::Forest::DBTree
 
-BUGS
-----
-Please report any bugs or feature requests on the GitHub bug tracker:
-
-https://github.com/rvosa/bio-phylo-forest-dbtree/issues
-
 Releases
 --------
 
-- Stable, tested, polished releases are posted intermittently to the Comprehensive Perl Archive
-  Network, here: [B/Bio-Phylo-Forest-DBTree](https://metacpan.org/release/Bio-Phylo-Forest-DBTree).
-  The CPAN releases are tested on very many different computers, the results of which you
-  can verify at [cpantesters.org](http://www.cpantesters.org/distro/B/Bio-Phylo-Forest-DBTree.html)
-- To accompany scholarly manuscripts, certain snapshots of the repository are posted to
-  Zenodo and assigned a DOI, the most recent of which is [10.5281/zenodo.1035856](https://doi.org/10.5281/zenodo.1035856)
-- The [git repository](https://github.com/rvosa/bio-phylo-forest-dbtree) always contains the 
-  most recent code, though with this you run the minor risk of installing untested features.
-  If you go this route, the key thing to look out for is whether the current build is passing
-  all tests: [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
+This package is released through the following platforms, listed in decreasing order of
+stability (but increasing order of up-to-datedness):
+
+1. Stable, tested, polished releases are posted intermittently to the Comprehensive Perl Archive
+   Network, here: [B/Bio-Phylo-Forest-DBTree](https://metacpan.org/release/Bio-Phylo-Forest-DBTree).
+   The CPAN releases are tested on very many different computers, the results of which you
+   can verify at [cpantesters.org](http://www.cpantesters.org/distro/B/Bio-Phylo-Forest-DBTree.html)
+2. To accompany scholarly manuscripts, certain snapshots of the repository are posted to
+   Zenodo and assigned a DOI, the most recent of which is [10.5281/zenodo.1035856](https://doi.org/10.5281/zenodo.1035856)
+3. The [git repository](https://github.com/rvosa/bio-phylo-forest-dbtree) always contains the 
+   most recent code, though with this you run the minor risk of installing untested features.
+   If you go this route, the key thing to look out for is whether the current build is passing
+   all tests: [![Build Status](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree.svg?branch=master)](https://travis-ci.org/rvosa/bio-phylo-forest-dbtree)
+
+BUGS
+----
+Please report any bugs or feature requests on the GitHub bug tracker:
+https://github.com/rvosa/bio-phylo-forest-dbtree/issues
 
 COPYRIGHT & LICENSE
 -------------------
