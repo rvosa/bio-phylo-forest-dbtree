@@ -1,0 +1,97 @@
+---
+title: "DBTree"
+author: "Rutger Vos (@rvosa)"
+date: "29-8-2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+This document demonstrates the usage of DBTree databases in R. Whereas many
+other languages tend to make access to relational databases more palatable 
+by providing object-relational mappings (possibly generated from the schema),
+the more common approach in R is simply to present the contents of a database
+table as a data frame. This is what we will do here, so let's set things up.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(RSQLite)
+library(dplyr)
+library(dbplyr)
+library(ape)
+```
+
+We are going to query the plant phylogeny of 
+[Smith & Brown, 2018](https://doi.org/10.1002/ajb2.1019). Release version
+v1.0 of this tree has been preprocessed with `megatree-loader` and deposited
+on figshare, which we will now download into a `data` subfolder:
+
+```{r download}
+dir.create("data", showWarnings = FALSE)
+download.file(
+    url = "https://ndownloader.figshare.com/files/17461988",
+    destfile = "data/ALLMB.db", 
+    mode = "wb")
+```
+
+The database just contains a single (relevant) table. We will now connect to
+the database and instantiate that table (called `node`) as if it was a data
+frame:
+
+```{r connect}
+ALLMB.db <- DBI::dbConnect(RSQLite::SQLite(), "data/ALLMB.db")
+ALLMB.tre <- tbl(ALLMB.db, "node")
+```
+
+Let's attempt to create a patristic distance matrix for the members of genus
+[Abelia](https://www.ncbi.nlm.nih.gov/taxonomy/86866). We start by querying the 
+database for all tips whose name matches the substring:
+
+```{r tips}
+tips <- ALLMB.tre %>%
+    filter(name %like% 'Abelia%') %>%
+    arrange(left) %>%
+    collect()
+```
+
+For all pairs of tips we are now going to look up the MRCA of the pair, and then
+compute the distance between the tips. I'm sure there are more efficient ways to
+do this but it shows how we can use the schema:
+
+```{r dist}
+ntips <- nrow(tips)
+x <- c()
+for ( i in 1:ntips-1 ) {
+    for ( j in i+1:ntips ) {
+    
+        # get the MRCA for the pairwise comparison
+        minl <- min(tips[i,]$left,tips[j,]$left)
+        maxr <- max(tips[i,]$right,tips[j,]$right)
+        mrca <- ALLMB.tre %>%
+            filter(left < minl && right > maxr) %>%
+            arrange(desc(left)) %>%
+            head(1) %>%
+            collect()
+        
+        # calculate the distance
+        mrcah <- mrca$height
+        pdist <- (tips[i,]$height-mrcah)+(tips[j,]$height-mrcah)
+        x <- c(x, pdist)
+    }
+}
+```
+
+The distances we now have form a lower triangle. As per the instructions in 
+ape::nj, we convert these to a matrix, perform neighbor-joining, and plot the 
+result:
+
+```{r matrix}
+M <- matrix(0, ntips, ntips)
+M[lower.tri(M)] <- x
+M <- t(M)
+M[lower.tri(M)] <- x
+dimnames(M) <- list(tips$name)
+tr <- nj(M)
+plot(tr, "u")
+```
+

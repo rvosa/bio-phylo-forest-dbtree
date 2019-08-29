@@ -1,8 +1,8 @@
 ---
-title: 'DBTree - toolkit for megatrees in portable databases'
+title: 'DBTree - very large phylogenies in portable databases'
 tags:
   - phylogenetics
-  - scripting
+  - programming toolkits
   - databases
   - topological queries
   - object-relational mapping
@@ -18,7 +18,7 @@ affiliations:
 date: 29 August 2019
 bibliography: paper.bib
 type: application
-head: megatrees in portable databases
+head: Megatrees in portable databases
 ---
 
 # Abstract
@@ -41,8 +41,8 @@ head: megatrees in portable databases
    do the transformation and to extract subtrees from the resulting
    database files. In addition, library code with object-relational 
    mappings that integrate with Bio::Phylo are provided. To 
-   demonstrate the utility of the general approach I also provided
-   database files for trees provided by Open Tree of Life, Green 
+   demonstrate the utility of the general approach I also provide
+   database files for trees published by Open Tree of Life, Green 
    Genes, D-PLACE, PhyloTree, the NCBI taxonomy and the recently 
    published, largest estimate of plant phylogeny to date.
 4. The database files that the toolkit produces are highly portable
@@ -260,7 +260,7 @@ be described by way of the following prose algorithm.
    tree statement from left to right, append a unique identifier
    to each closing parenthesis. Closing parentheses with non-standard 
    semantics (e.g. as part of references to taxonomic authorities in tip 
-   labels, which consequently would likely by single or double quoted) are 
+   labels, which consequently would likely be single or double quoted) are 
    ignored. The same careful tokenization, taking into account the Newick
    rules (loosely observed as they are) for single and double quoting, 
    spaces, and square bracketed comments, must be applied dilligently to 
@@ -360,13 +360,27 @@ databases and the tools to make more.
 
 # Discussion
 
-# Conclusions 
+The concepts, tools and data files presented here are intended to make life 
+easier for researchers in computational biology. I would therefore like to
+reassure the reader that there is really no need to dust off any lingering
+knowledge of SQL or Perl to be able to take advantage of the outcomes of this
+study. At present, R environments are very popular, and the databases produced
+with the tools from this study can be readily queried in that language by 
+accessing them as data frames and processing them, e.g. with `dplyr` and
+related tools. I provide an R Markdown document on the git repository (see
+Data Availability) that provides a simple run through of how to operate on the
+databases to extract clades, MRCAs, and pairwise distances. The example uses 
+this to construct a simple NJ tree, but a more useful application of the 
+demonstrated functionality might be to construct variance/covariance matrices 
+for comparative analyses, for example. 
 
 # Acknowledgements
 
-Bill Piel, Mannis van Oven
-
-# Authors' contributions
+I would like to thank Bill Piel for the numerous conversations we've had over
+the years on the topic of representing trees in relational databases, from which
+I learned some of the concepts and ideas presented here. I would also like
+to thank Mannis van Oven, who kindly provided me with the data dump of the
+PhyloTree project.
 
 # Data availability
 
