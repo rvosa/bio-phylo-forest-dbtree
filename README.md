@@ -119,6 +119,9 @@ database files that this distribution can operate on. These are:
 - D-Place ([Kirby et al., 2016][2])        - [10.6084/m9.figshare.4620217.v1](http://doi.org/10.6084/m9.figshare.4620217.v1)
 - NCBI taxonomy ([Federhen, 2011][3])      - [10.6084/m9.figshare.4620733.v1](http://doi.org/10.6084/m9.figshare.4620733.v1)
 - Green Genes ([DeSantis et al., 2006][4]) - [10.6084/m9.figshare.4620214.v1](http://doi.org/10.6084/m9.figshare.4620214.v1)
+- ALLMB ([Smith & Brown, 2018][13])        - [10.6084/m9.figshare.9747638](https://doi.org/10.6084/m9.figshare.9747638)
+- Open Tree ([Hinchliff et al.,2015][14])  - [10.6084/m9.figshare.9750509](https://doi.org/10.6084/m9.figshare.9750509)
+
 
 [1]: http://doi.org/10.1002/humu.20921
 [2]: http://doi.org/10.1371/journal.pone.0158391
@@ -132,3 +135,5 @@ database files that this distribution can operate on. These are:
 [10]: https://www.sqlite.org/index.html
 [11]: https://sqlitebrowser.org/
 [12]: http://evolution.genetics.washington.edu/phylip/newicktree.html
+[13]: https://doi.org/10.1002/ajb2.1019
+[14]: https://doi.org/10.1073/pnas.1423041112
