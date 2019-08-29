@@ -7,16 +7,27 @@ DBTree - toolkit for megatrees in portable databases
 
 ![Figure 1](docs/fig1.svg)
 
-An example mapping of a tree topology to a database table. With this mapping, several
-topological queries can be performed quickly.
+An example mapping of a tree topology to a database table. The mapping is
+created by processing a [Newick][12] tree file (infile.tre) as follows: 
+
+    megatree-loader -i infile.tre -d outfile.db 
+    
+With this mapping, several topological queries can be performed quickly when 
+loading the output file in [sqlite3][10] (or the excellent [SQLiteBrowser][11]).
 
 ```sql
 -- select the most recent common ancestor of C and F
-select * from node as MRCA, node as C, node as F \
-  where C.name='C' and F.name='F' \
-  and MRCA.left < min(C.left,F.left) \
-  and MRCA.right > max(C.right,F.right) \
-  order by MRCA.left asc limit 1;
+select MRCA.* from node as MRCA, node as C, node as F 
+  where C.name='C' and F.name='F' 
+  and MRCA.left < min(C.left,F.left) 
+  and MRCA.right > max(C.right,F.right)
+  order by MRCA.left desc limit 1;
+ 
+-- select the descendants from node n2
+select DESCENDANT.* from node as DESCENDANT, node as MRCA 
+  where MRCA.name='n2' 
+  and DESCENDANT.left > MRCA.left 
+  and DESCENDANT.right < MRCA.right;
 ```
 
 Installation
@@ -60,26 +71,32 @@ you wish to install or verify.
 
 This approach starts by installing the prerequisites manually:
 
-    # do this only if you don't already have these already
-    sudo cpanm Bio::Phylo
-    sudo cpanm DBIx::Class
-    sudo cpanm DBD::SQLite
+```bash
+# do this only if you don't already have these already
+sudo cpanm Bio::Phylo
+sudo cpanm DBIx::Class
+sudo cpanm DBD::SQLite
+```
 
 Then, unpack the archive, move into the top level folder, and issue the build commands:
 
-    perl Makefile.PL
-    make
-    make test
+```bash
+perl Makefile.PL
+make
+make test
+```
 
 Finally, you can opt to install the built products (using `sudo make install`), or
 keep them in the present location, which would require you to update two environment
 variables:
 
-    # add the script folder inside the archive to the search path for executables
-    export PATH="$PATH":`pwd`/script
+```bash
+# add the script folder inside the archive to the search path for executables
+export PATH="$PATH":`pwd`/script
     
-    # add the lib folder to the search path for perl libraries
-    export PERL5LIB="$PERL5LIB":`pwd`/lib
+# add the lib folder to the search path for perl libraries
+export PERL5LIB="$PERL5LIB":`pwd`/lib
+```
 
 BUGS
 ----
@@ -112,3 +129,6 @@ database files that this distribution can operate on. These are:
 [7]: https://doi.org/10.5281/zenodo.1035856
 [8]: https://github.com/rvosa/bio-phylo-forest-dbtree
 [9]: https://metacpan.org/pod/distribution/App-cpanminus/bin/cpanm
+[10]: https://www.sqlite.org/index.html
+[11]: https://sqlitebrowser.org/
+[12]: http://evolution.genetics.washington.edu/phylip/newicktree.html
