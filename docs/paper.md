@@ -17,8 +17,6 @@ affiliations:
    index: 2
 date: 29 August 2019
 bibliography: paper.bib
-type: application
-head: Megatrees in portable databases
 ---
 
 # Abstract
@@ -29,7 +27,7 @@ head: Megatrees in portable databases
    outcomes of novel methods of phylogenetic inference, and sometimes
    as a snapshot of the molecular diversity within a large group.
    Commonly used methods to reuse these trees in scripting 
-   environments have their limitations.   
+   environments have their limitations.
 2. I present a toolkit that transforms data presented in the most
    commonly used format for such trees into a database schema that
    facilitates quick topological queries. Specifically, the need for 
@@ -123,7 +121,7 @@ with one record for each node, by way of the following columns:
   i.e. the **id**, of the parent node.
 - **left** - an index that is generated as an autoincrementing integer
   in a pre-order traversal, i.e. moving from root to tips, parent nodes
-  are assigned the index before their child nodes.      
+  are assigned the index before their child nodes.
 - **right** - an index that is generated as an autoincrementing integer
   in a post-order traversal, i.e. moving from root to tips, child nodes
   are assigned the index before their parents. That is, "on the way back"
@@ -269,7 +267,7 @@ be described by way of the following prose algorithm.
    ignored. The same careful tokenization, taking into account the Newick
    rules (loosely observed as they are) for single and double quoting, 
    spaces, and square bracketed comments, must be applied dilligently to 
-   identify the other symbols in the next steps as well.    
+   identify the other symbols in the next steps as well.
 2. Remove the closing semicolon of the parenthetical statement. From here
    on, every nested taxon including the entire tree is syntactically self-same:
    it may have a branch length (the last colon symbol followed by a number) 
@@ -411,14 +409,14 @@ https://metacpan.org/release/Bio-Phylo-Forest-DBTree
 The database files discussed in this manuscript are available at
 the following locations:
 
-- PhyloTree [vanOven:2009] - http://doi.org/10.6084/m9.figshare.4620757.v1
-- D-PLACE [Kirby:2016] - http://doi.org/10.6084/m9.figshare.4620217.v1
-- NCBI Taxonomy [Federhen:2011] - http://doi.org/10.6084/m9.figshare.4620733.v1
-- Green Genes [DeSantis:2006] - http://doi.org/10.6084/m9.figshare.4620214.v1
-- ALLMB [Smith:2018] -  https://doi.org/10.6084/m9.figshare.9747638
-- Open Tree of Life [Hinchliff:2015] - https://doi.org/10.6084/m9.figshare.9750509
-
-# References
+| Name              | Citation         | Database DOI                |
+|-------------------|------------------|-----------------------------|
+| PhyloTree         | [vanOven:2009]   | 10.6084/m9.figshare.4620757 |
+| D-PLACE           | [Kirby:2016]     | 10.6084/m9.figshare.4620217 |
+| NCBI Taxonomy     | [Federhen:2011]  | 10.6084/m9.figshare.4620733 |
+| Green Genes       | [DeSantis:2006]  | 10.6084/m9.figshare.4620214 |
+| ALLMB             | [Smith:2018]     | 10.6084/m9.figshare.9747638 |
+| Open Tree of Life | [Hinchliff:2015] | 10.6084/m9.figshare.9750509 |
 
 # Figures and tables
 
@@ -426,6 +424,8 @@ the following locations:
 
 Figure 1: representation of a tree shape in a relational database, with
 additional, precomputed indexes and values. See text for details.
+
+\newpage
 
 | Name   | Type        | Index                |
 |--------|-------------|----------------------|
@@ -438,3 +438,5 @@ additional, precomputed indexes and values. See text for details.
 | height | float       |                      |
 
 Table 1: schema for DBTree databases.
+
+# References
