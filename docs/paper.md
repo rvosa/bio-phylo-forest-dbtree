@@ -62,18 +62,17 @@ The estimates of phylogeny that appear in the literature are continuing
 to get larger and larger. The contexts within which these trees appear
 vary somewhat. In some cases, the tree is constructed as a 'one off'
 estimate that was required in order to test a hypothesis in a phylogenetic 
-comparative framework (e.g. [Zanne:2014]). In other cases, the tree is
+comparative framework [e.g. @Zanne:2014]. In other cases, the tree is
 the outcome of an initiative to produce such trees and is thus a 
-demonstration of the method (e.g. [Hinchliff:2015], [Smith:2018]). In yet 
+demonstration of the method [e.g. @Hinchliff:2015; @Smith:2018]. In yet 
 other cases, the trees are provided as snapshots of the diversity contained 
-in a database (e.g. [vanOven:2009], [Kirby:2016], [Federhen:2011], 
-[DeSantis:2006]). 
+in a database [e.g. @vanOven:2009; @Kirby:2016; @Federhen:2012; @DeSantis:2006]. 
 
 All these data coming publicly available is a wonderful development. 
 However, the format in which these data are published is not necessarily 
 the most convenient from the perspective of programmatic reuse. Most 
 commonly, phylogenetic trees of this size are made available in the Newick 
-format ([Newick]), as other formats (e.g. [Nexus], [NeXML]) add verbosity 
+format [@Newick], as other formats [e.g. @Nexus; @NeXML] add verbosity 
 in exchange for a potential level of richness of annotation that is not
 needed in this case anyway. From the perspective of conciseness when 
 transmitting tree files, Newick is thus a sensible choice. However, the
@@ -83,7 +82,7 @@ parenthetical tree description and load some kind of graph structure or
 object into memory every time the script is run. With large trees, this
 takes a lot of time and consumes a lot of working memory. For example,
 loading the latest release of the Open Tree of Life estimate 
-(v10.4, [Hinchliff:2015]) into DendroPy [DendroPy] takes about 15 minutes 
+[v10.4, see @Hinchliff:2015] into DendroPy [@DendroPy] takes about 15 minutes 
 and consumes over 8 GB of RAM. This could very well be acceptable for 
 some use cases (e.g. for processes that subsequently run for very long) 
 but it can clearly be a limiting factor under other circumstances.
@@ -93,7 +92,7 @@ on-disk database as a one-time operation, and then access the tree data
 through a database handle. Subsequently, there is no more complex text
 parsing, and the tree does not have to be loaded into memory to be able 
 to query its topology. To exploit these advantages, the NCBI taxonomy 
-([Federhen:2011]) is distributed in the form of database tables, for
+[@Federhen:2012] is distributed in the form of database tables, for
 example. In that case, and indeed in most cases where trees that might
 be polytomous are represented in databases, the topology is captured
 using adjacency lists, where each database record for a node (except 
@@ -201,7 +200,7 @@ of the extra indexes are also possible as single queries. For example,
 several indexes of the tendency of nodes towards the tips (such that the 
 tree is "stemmy") or towards the root ("branchy")  are used to summarize
 the mode of diversification in a clade (here, apparently accelerating or 
-slowing down, respectively). One of these [Fiala:1985] iterates over all
+slowing down, respectively). One of these [@Fiala:1985] iterates over all
 internal nodes and for each calculates the ratio of the focal node's branch
 length over the sum of descendent branch lengths plus the focal length
 and then averages over these ratios. This can be expressed in a single query:
@@ -244,7 +243,7 @@ an object-oriented class is straightforward. Many programming languages have
 tools for this; commonly-used examples are Hibernate for the Java programming
 language and SQLAlchemy for Python. In the present case, I opted for the
 functionality of DBIx::Class in Perl. I then modified the generated code somewhat 
-so that it inherits from a tree node class of Bio::Phylo [Vos:2011], providing 
+so that it inherits from a tree node class of Bio::Phylo [@Vos:2011], providing 
 it with the additional functionality of this package (e.g. export to various 
 flat file formats and tree visualization). Infeasibly large phylogenies can 
 thus be programmed like an other tree object that Bio::Phylo operates on. 
@@ -307,14 +306,14 @@ I implemented this basic algorithm in a script and applied this to the following
 large, published Newick trees:
 
 - A tree of human societies backing the D-PLACE global database of cultural, 
-  linguistic and environmental diversity [Kirby:2016]. 1,647 nodes using the 
+  linguistic and environmental diversity [@Kirby:2016]. 1,647 nodes using the 
   release that was current as of 04.02.2017.
 - A tree of 16S rRNA gene sequences made available by the Greengenes database
-  [DeSantis:2006], release `gg_13_5`, current as of 11.10.2017. Contains
+  [@DeSantis:2006], release `gg_13_5`, current as of 11.10.2017. Contains
   406,903 nodes.
-- A synthesis of plant systematics from [Smith:2018], identified as ALLMB.tre,
+- A synthesis of plant systematics from [@Smith:2018], identified as ALLMB.tre,
   version v1.0, current as of 29.08.2019. Contains 440,712 nodes. 
-- A synthetic tree provided by the Open Tree of Life project [Hinchliff:2015].
+- A synthetic tree provided by the Open Tree of Life project [@Hinchliff:2015].
   Identified as v10.4, current as of 24.09.2018. Contains 2,902,755 nodes.
 
 In addition, I implemented two scripts that process tree descriptions in 
@@ -324,7 +323,7 @@ proprietary, tabular formats:
   this is from GenBank release current as of 03.02.2017, and contains 
   1,554,272 nodes.  
 - A custom format that captures a tree of Y-chromosome haplotype diversity 
-  backing the PhyloTree database [vanOven:2009], build 17, current as of 
+  backing the PhyloTree database [@vanOven:2009], build 17, current as of 
   11.10.2017. Contains 5,438 nodes.
 
 # Results
@@ -411,21 +410,21 @@ the following locations:
 
 | Name              | Citation         | Database DOI                |
 |-------------------|------------------|-----------------------------|
-| PhyloTree         | [vanOven:2009]   | 10.6084/m9.figshare.4620757 |
-| D-PLACE           | [Kirby:2016]     | 10.6084/m9.figshare.4620217 |
-| NCBI Taxonomy     | [Federhen:2011]  | 10.6084/m9.figshare.4620733 |
-| Green Genes       | [DeSantis:2006]  | 10.6084/m9.figshare.4620214 |
-| ALLMB             | [Smith:2018]     | 10.6084/m9.figshare.9747638 |
-| Open Tree of Life | [Hinchliff:2015] | 10.6084/m9.figshare.9750509 |
+| PhyloTree         | [@vanOven:2009]   | 10.6084/m9.figshare.4620757 |
+| D-PLACE           | [@Kirby:2016]     | 10.6084/m9.figshare.4620217 |
+| NCBI Taxonomy     | [@Federhen:2012]  | 10.6084/m9.figshare.4620733 |
+| Green Genes       | [@DeSantis:2006]  | 10.6084/m9.figshare.4620214 |
+| ALLMB             | [@Smith:2018]     | 10.6084/m9.figshare.9747638 |
+| Open Tree of Life | [@Hinchliff:2015] | 10.6084/m9.figshare.9750509 |
+
+\newpage
 
 # Figures and tables
 
-![](fig1.svg)
+![](fig1.pdf)
 
 Figure 1: representation of a tree shape in a relational database, with
 additional, precomputed indexes and values. See text for details.
-
-\newpage
 
 | Name   | Type        | Index                |
 |--------|-------------|----------------------|
@@ -438,5 +437,7 @@ additional, precomputed indexes and values. See text for details.
 | height | float       |                      |
 
 Table 1: schema for DBTree databases.
+
+\newpage
 
 # References

@@ -36,7 +36,7 @@ $(output): $(input) $(bib) Makefile
 	-V published="00 January 0000" \
 	-V page="00" \
 	-V graphics="true" \
-	-V joss_logo_path="whedon/resources/joss-logo.png" \
+	-V logo_path="whedon/resources/joss-logo.png" \
 	-V geometry:margin=1in \
 	-o $(output) \
 	--pdf-engine=xelatex \
