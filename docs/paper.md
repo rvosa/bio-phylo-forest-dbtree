@@ -83,7 +83,12 @@ researcher-programmer who wants to reuse such a tree in a scripting
 environment is then faced with the need to parse text containing the 
 parenthetical tree description and load some kind of graph structure or
 object into memory every time the script is run. With large trees, this
-takes a lot of time and consumes a lot of working memory.
+takes a lot of time and consumes a lot of working memory. For example,
+loading the latest release of the Open Tree of Life estimate 
+(v10.4, [Hinchliff:2015]) into DendroPy [DendroPy] takes about 15 minutes 
+and consumes over 8 GB of RAM. This could very well be acceptable for 
+some use cases (e.g. for processes that subsequently run for very long) 
+but it can clearly be a limiting factor under other circumstances.
 
 An alternative approach is to ingest the tree file into a portable, 
 on-disk database as a one-time operation, and then access the tree data
@@ -103,11 +108,11 @@ use relational database engines that can compute transitive closures,
 but not all commonly-used engines support those and the computation
 imposes additional computational cost on the ones that do.
 
-Pre-computing additional values and indexes as column values can obviate
-the need for some of these traversals entirely, thereby speeding up tree
-traversal significantly. The general idea is illustrated in Fig 1. The
-topology shown is represented in the table, with one record for each node,
-by way of the following columns:
+Pre-computing certain metrics and topological indexes as column values 
+can obviate the need for some of these traversals entirely, thereby 
+speeding up tree traversal significantly. The general idea is 
+illustrated in Fig 1. The topology shown is represented in the table, 
+with one record for each node, by way of the following columns:
 
 - **name** - the label (if any), i.e. the values in this column 
   correspond to those in the tree.
@@ -372,7 +377,15 @@ Data Availability) that provides a simple run through of how to operate on the
 databases to extract clades, MRCAs, and pairwise distances. The example uses 
 this to construct a simple NJ tree, but a more useful application of the 
 demonstrated functionality might be to construct variance/covariance matrices 
-for comparative analyses, for example. 
+for comparative analyses, for example. For programming languages where 
+object-relational mapping is a more common, mature technique, the schema and
+databases presented here, may form the basis for extending the functionality
+of some popular toolkits. For example, generating an object-relational mapping
+from the schema for Python results in a tiny SQLAlchemy class that, thanks to 
+Python's multiple inheritance model, can additionally subclass DendroPy's 
+tree node model, thus making persistently databased trees accessible through
+the same programming interface as memory resident trees. I invite authors
+of libraries that could take advantage of this to consider this possibility.
 
 # Acknowledgements
 
