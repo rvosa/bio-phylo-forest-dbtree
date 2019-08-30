@@ -15,7 +15,7 @@ bib	:= paper.bib
 
 # Main code -- no more customization variables after this point
 # .............................................................................
-$(output): $(input) $(bib) Makefile
+pretty: $(input) $(bib) Makefile
 	pandoc \
 	-V graphics="true" \
 	-V geometry:margin=1in \
@@ -24,6 +24,16 @@ $(output): $(input) $(bib) Makefile
 	--filter pandoc-citeproc $(input) \
 	--from markdown+autolink_bare_uris \
 	--template "whedon/resources/pretty.tex"
+
+review: $(input) $(bib) Makefile
+	pandoc \
+	-V graphics="true" \
+	-V geometry:margin=1in \
+	-o $(output) \
+	--pdf-engine=xelatex \
+	--filter pandoc-citeproc $(input) \
+	--from markdown+autolink_bare_uris \
+	--template "whedon/resources/review.tex"
 
 autorefresh:;
 	((ls $(input) $(bib) | entr make $(output)) &)

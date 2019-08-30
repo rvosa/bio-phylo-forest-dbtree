@@ -9,12 +9,14 @@ tags:
 authors:
   - name: Rutger A. Vos
     orcid: 0000-0001-9254-7318
-    affiliation: "1, 2"
+    affiliation: "1, 2, 3"
 affiliations:
  - name: Naturalis Biodiversity Center, Leiden, the Netherlands
    index: 1
  - name: Institute of Biology Leiden, Leiden University, the Netherlands
    index: 2
+ - name: Corresponding author <rutger.vos@naturalis.nl>
+   index: 3  
 date: 29 August 2019
 bibliography: paper.bib
 ---
@@ -24,7 +26,7 @@ bibliography: paper.bib
 1. Growing numbers of large phylogenetic syntheses are being published. 
    Sometimes as part of a hypothesis testing framework, sometimes to 
    present novel methods of phylogenetic inference, and sometimes
-   as a snapshot of the diversity within a large group. Commonly used 
+   as a snapshot of the diversity within a database. Commonly used 
    methods to reuse these trees in scripting environments have their 
    limitations.
 2. I present a toolkit that transforms data presented in the most
