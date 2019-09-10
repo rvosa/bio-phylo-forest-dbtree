@@ -39,10 +39,10 @@ bibliography: paper.bib
 3. The resulting toolkit provides several command line tools to 
    do the transformation and to extract subtrees from the resulting
    database files. In addition, reusable library code with 
-   object-relational mappings for programmatic access are provided. 
+   object-relational mappings for programmatic access is provided. 
    To demonstrate the utility of the general approach I also provide
    database files for trees published by Open Tree of Life, Greengenes, 
-   D-PLACE, PhyloTree, the NCBI taxonomy and a recently estimate of 
+   D-PLACE, PhyloTree, the NCBI taxonomy and a recent estimate of 
    plant phylogeny.
 4. The database files that the toolkit produces are highly portable
    (either as SQLite or tabular text) and can readily be queried,
