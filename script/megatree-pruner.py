@@ -25,21 +25,22 @@ logging.basicConfig(level=args.verbose, format='%(asctime)s %(levelname)s: %(mes
 logging.warning('Naive implementation. Not for production use. Read the notice in the source code.')
 
 # read tip labels from file and/or list
-tips = []
+tips = {}
 if args.infile is not None and os.path.isfile(args.infile):
     fh = open(args.infile, 'r')
     for line in fh.readlines():
         tip = line.rstrip()
         logging.info('Adding tip label "%s" from file "%s' % (tip, args.infile))
-        tips.append(tip)
+        tips[tip] = 1
     fh.close()
 if args.list is not None:
-    tips.append(args.list.split(','))
+    for tip in args.list.split(','):
+        tips[tip] = 1
 
 # read tree
 logging.info('Going to read file "%s" as Newick' % args.tree)
 tree = dendropy.Tree.get(path=args.tree, schema="newick")
 
 # extract subtree, print results
-pruned = tree.extract_tree_with_taxa_labels(labels=tips)
+pruned = tree.extract_tree_with_taxa_labels(labels=tips.keys())
 print(pruned.as_string(schema="newick"))
