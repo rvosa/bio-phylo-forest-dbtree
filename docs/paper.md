@@ -289,6 +289,30 @@ proprietary, tabular formats:
   backing the PhyloTree database [@vanOven:2009], build 17, current as of 
   11.10.2017. Contains 5,438 nodes.
 
+## Performance benchmarking
+
+To assess the performance of the approach I compared subtree extraction as
+enabled by DBTree with a naive implementation based on Newick descriptions.
+The extraction of a subtree from a large, published phylogeny is a very common
+operation. This is done, for example, when trait data are only available for a
+subset of the taxa in the tree and these data need to be analysed in a phylogenetic
+comparative framework. Such subtree extraction operation is much of the raison d'être 
+for the Phylomatic toolkit [@Webb:2005] and the PhyloTastic project [@Stoltzfus:2013];
+likewise, NCBI provides a web service to extract the "common tree" from the NCBI 
+taxonomy [@Federhen:2012].
+
+I implemented a DBTree-based implementation of subtree extraction that takes
+an input list of tip labels, extracts these and their ancestors from the specified 
+database (omitting any non-branching ancestors), and returns their relationships
+as a Newick-formatted string. I compared this with a script that uses DendroPy's
+default implementations for Newick parsing (i.e. `dendropy.Tree.get`) subtree
+extraction (`tree.extract_tree_with_taxa_labels`) and output serialization back to
+Newick (`tree.as_string`). As benchmark data set I used the most recent release of
+the Open Tree of Life topology. From this tree I extracted sets of randomly sampled 
+tips of size 2^_n_^ * 10 where _n_ $\in$ \{0,...,12\}, i.e. sets 
+ranging in size from 10 to 40,960 tips. For each implementation I ran each sample 
+three times, recording the processing time for each replicate. 
+
 # Results
 
 The substantial results of this study comprise library code and scripts. The 
@@ -321,6 +345,14 @@ the largest published phylogeny I am aware of), the Open Tree of Life release,
 took approximately one hour on a current MacBook Pro. This is thus a somewhat 
 costly operation that, mercifully, needs to be run only once. 
 
+The subtree extraction benchmarking (see Fig. 2) demonstrates that such indexing 
+is an operation that may be worth it. Tiny subtrees of a few dozen tips took
+DBTree about a second. For small subtrees ($\leqslant$ 640 tips), the DBTree 
+implementation returned results in less than 10 seconds where it took 
+DendroPy over 13 minutes; for the largest subtree (40,960 tips), DendroPy took 
+over an hour longer to complete than DBTree (~69 minutes vs. ~138 minutes).
+
+
 # Discussion
 
 The concepts, tools and data files presented here are intended to make life 
@@ -342,13 +374,24 @@ node model, thus making persistently databased trees accessible through the
 same programming interface as memory resident trees. I invite authors of 
 libraries that could take advantage of this to consider this possibility.
 
+The performance of the subtree extraction is such that this very common
+operation is much easier supported on DBTree-indexed trees than on Newick 
+tree files. The implication of this is twofold: i) projects that release 
+very large phylogenies periodically - such as the Open Tree of Life project -
+might consider making their products available in DBTree format; ii) because
+of the quicker return time of the subtree extraction process, the functionality
+can also be exposed as a synchronous request/response web service, e.g. as 
+envisioned by the PhyloTastic project [@Stoltzfus:2013].
+
 # Acknowledgements
 
 I would like to thank Bill Piel for the numerous conversations we've had over
 the years on the topic of representing trees in relational databases, from which
 I learned some of the concepts and ideas presented here. I would also like
 to thank Mannis van Oven, who kindly provided me with the data dump of the
-PhyloTree project.
+PhyloTree project. Lastly, I am grateful to the two anonymous reviewers and the
+editor of this journal, who helped to improve this manuscript with their
+comments.
 
 # Data availability
 
@@ -383,6 +426,24 @@ the following locations:
 Figure 1: representation of a tree shape in a relational database, with
 additional, precomputed indexes and values. See text for details.
 
+\newpage
+
+![](fig2.pdf)
+
+Figure 2: tree pruning performance comparison. In this example, sets of taxa
+of varying sizes (as shown on the x-axis) are randomly sampled and extracted 
+as subtrees from the Open Tree of Life topology. The comparison is between an
+implementation based on DendroPy that reads the published, Newick version of
+the tree as made available by the OpenTOL consortium, and an implementation
+that uses the DBTree-indexed version of the same tree. The latter implementation
+is made available as the `megatree-pruner` program in the software release. The
+running times for both implementations are recorded as the logarithm to base 10
+of the real system time in seconds for the respective processes to complete. 
+Values range from less than one second to about two and a half hours. See text 
+for details.
+
+\newpage
+
 | Name   | Type        | Index                |
 |--------|-------------|----------------------|
 | id     | int         | primary key not null |
@@ -393,7 +454,7 @@ additional, precomputed indexes and values. See text for details.
 | length | float       |                      |
 | height | float       |                      |
 
-Table 1: schema for DBTree databases.
+Table 1: schema for DBTree databases. See text for details.
 
 \newpage
 

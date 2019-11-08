@@ -22,7 +22,7 @@ pretty: $(input) $(bib) Makefile
 	-o $(output) \
 	--pdf-engine=xelatex \
 	--filter pandoc-citeproc $(input) \
-	--from markdown+autolink_bare_uris \
+	--from markdown+autolink_bare_uris+superscript+tex_math_dollars \
 	--template "whedon/resources/pretty.tex"
 
 review: $(input) $(bib) Makefile
@@ -32,7 +32,7 @@ review: $(input) $(bib) Makefile
 	-o $(output) \
 	--pdf-engine=xelatex \
 	--filter pandoc-citeproc $(input) \
-	--from markdown+autolink_bare_uris \
+	--from markdown+autolink_bare_uris+superscript+tex_math_dollars \
 	--template "whedon/resources/review.tex"
 
 autorefresh:;
