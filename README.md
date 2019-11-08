@@ -30,6 +30,25 @@ select DESCENDANT.* from node as DESCENDANT, node as MRCA
   and DESCENDANT.right < MRCA.right;
 ```
 
+Using databases that are indexed in this way, significant performance increases can
+be accomplished. For example, a very common usage of large, published, static 
+phylogenies is to extract subtrees from them in order to use them for downstream 
+analysis (e.g. in phylogenetic comparative studies). This application is so common that
+it forms essentially the basis of the success of 
+[Phylomatic](https://phylodiversity.net/phylomatic/) and the 
+[PhyloTastic](http://phylotastic.org/) project.
+A similar subtree extraction operation is also implemented by NCBI as the option to 
+extract the '[common tree](https://www.ncbi.nlm.nih.gov/Taxonomy/CommonTree/wwwcmt.cgi)'
+from the NCBI taxonomy. Here, this functionality is made available by the 
+`megatree-pruner` program. To benchmark its performance in comparison with a naive 
+approach that operates on Newick strings, a pruner script based on 
+[DendroPy](https://dendropy.org/) was run side by side with the pruner on randomly
+selected sets of tips from the OpenTree topology. The peformance differene is shown
+below:
+
+![Figure 2](docs/fig2.svg)
+
+
 Installation
 ------------
 
