@@ -43,7 +43,7 @@ from the NCBI taxonomy. Here, this functionality is made available by the
 `megatree-pruner` program. To benchmark its performance in comparison with a naive 
 approach that operates on Newick strings, a pruner script based on 
 [DendroPy](https://dendropy.org/) was run side by side with the pruner on randomly
-selected sets of tips from the OpenTree topology. The peformance differene is shown
+selected sets of tips from the OpenTree topology. The performance difference is shown
 below:
 
 ![Figure 2](docs/fig2.svg)
