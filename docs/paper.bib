@@ -304,3 +304,103 @@
 	year = {2013}
 }
 
+@article{Mctavish:2015,
+	abstract = {Motivation: Phylogenetic estimates from published studies can be archived using general platforms like Dryad (Vision, 2010) or TreeBASE (Sanderson et al., 1994). Such services fulfill a crucial role in ensuring transparency and reproducibility in phylogenetic research. However, digital tree data files often require some editing (e.g. rerooting) to improve the accuracy and reusability of the phylogenetic statements. Furthermore, establishing the mapping between tip labels used in a tree and taxa in a single common taxonomy dramatically improves the ability of other researchers to reuse phylogenetic estimates. As the process of curating a published phylogenetic estimate is not error-free, retaining a full record of the provenance of edits to a tree is crucial for openness, allowing editors to receive credit for their work and making errors introduced during curation easier to correct. Results: Here, we report the development of software infrastructure to support the open curation of phylogenetic data by the community of biologists. The backend of the system provides an interface for the standard database operations of creating, reading, updating and deleting records by making commits to a git repository. The record of the history of edits to a tree is preserved by git's version control features. Hosting this data store on GitHub (http://github.com/) provides open access to the data store using tools familiar to many developers. We have deployed a server running the 'phylesystem-api', which wraps the interactions with git and GitHub. The Open Tree of Life project has also developed and deployed a JavaScript application that uses the phylesystem-api and other web services to enable input and curation of published phylogenetic statements.},
+	author = {Mctavish, Emily Jane and Hinchliff, Cody E. and Allman, James F. and Brown, Joseph W. and Cranston, Karen A. and Holder, Mark T. and Rees, Jonathan A. and Smith, Stephen A.},
+	doi = {10.1093/bioinformatics/btv276},
+	issn = {14602059},
+	journal = {Bioinformatics},
+	mendeley-groups = {DBTree},
+	month = {sep},
+	number = {17},
+	pages = {2794--2800},
+	title = {{Phylesystem: A git-based data store for community-curated phylogenetic estimates}},
+	url = {https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btv276},
+	volume = {31},
+	year = {2015}
+}
+@article{Redelings:2017,
+	abstract = {We present a new supertree method that enables rapid estimation of a summary tree on the scale of millions of leaves. This supertree method summarizes a collection of input phylogenies and an input taxonomy. We introduce formal goals and criteria for such a supertree to satisfy in order to transparently and justifiably represent the input trees. In addition to producing a supertree, our method computes annotations that describe which grouping in the input trees support and conflict with each group in the supertree. We compare our supertree construction method to a previously published supertree construction method by assessing their performance on input trees used to construct the Open Tree of Life version 4, and find that our method increases the number of displayed input splits from 35,518 to 39,639 and decreases the number of conflicting input splits from 2,760 to 1,357. The new supertree method also improves on the previous supertree construction method in that it produces no unsupported branches and avoids unnecessary polytomies. This pipeline is currently used by the Open Tree of Life project to produce all of the versions of project's "synthetic tree" starting at version 5. This software pipeline is called "propinquity". It relies heavily on "otcetera"-a set of C++ tools to perform most of the steps of the pipeline. All of the components are free software and are available on GitHub.},
+	author = {Redelings, Benjamin D. and Holder, Mark T.},
+	doi = {10.7717/peerj.3058},
+	file = {::},
+	issn = {21678359},
+	journal = {PeerJ},
+	keywords = {Phylogenetics,Software,Supertree,Taxonomy,Tree of life},
+	mendeley-groups = {DBTree},
+	number = {3},
+	publisher = {PeerJ Inc.},
+	title = {{A supertree pipeline for summarizing phylogenetic and taxonomic information for millions of species}},
+	volume = {2017},
+	year = {2017}
+}
+@article{Rees:2017,
+	abstract = {Taxonomy and nomenclature data are critical for any project that synthesizes biodiversity data, as most biodiversity data sets use taxonomic names to identify taxa. Open Tree of Life is one such project, synthesizing sets of published phylogenetic trees into comprehensive summary trees. No single published taxonomy met the taxonomic and nomenclatural needs of the project. Here we describe a system for reproducibly combining several source taxonomies into a synthetic taxonomy, and we discuss the challenges of taxonomic and nomenclatural synthesis for downstream biodiversity projects.},
+	author = {Rees, Jonathan A. and Cranston, Karen},
+	doi = {10.3897/BDJ.5.e12581},
+	file = {::},
+	issn = {13142828},
+	journal = {Biodiversity Data Journal},
+	keywords = {Taxonomy phylogeny automation pipeline synthesis},
+	mendeley-groups = {DBTree},
+	number = {1},
+	publisher = {Pensoft Publishers},
+	title = {{Automated assembly of a reference taxonomy for phylogenetic data synthesis}},
+	volume = {5},
+	year = {2017}
+}
+
+@article{Antonelli:2017,
+	abstract = {Rapidly growing biological data - including molecular sequences and fossils - hold an unprecedented potential to reveal how evolutionary processes generate and maintain biodiversity. However, researchers often have to develop their own idiosyncratic workflows to integrate and analyze these data for reconstructing time-calibrated phylogenies. In addition, divergence times estimated under different methods and assumptions, and based on data of various quality and reliability, should not be combined without proper correction. Here we introduce a modular framework termed SUPERSMART (Self- Updating Platform for Estimating Rates of Speciation and Migration, Ages, and Relationships of Taxa), and provide a proof of concept for dealing with the moving targets of evolutionary and biogeographical research. This framework assembles comprehensive data sets of molecular and fossil data for any taxa and infers dated phylogenies using robust species tree methods, also allowing for the inclusion of genomic data produced through next-generation sequencing techniques. We exemplify the application of our method by presenting phylogenetic and dating analyses for the mammal order Primates and for the plant family Arecaceae (palms). We believe that this framework will provide a valuable tool for a wide range of hypothesis-driven research questions in systematics, biogeography, and evolution. SUPERSMART will also accelerate the inference of a "Dated Tree of Life" where all node ages are directly comparable.},
+	author = {Antonelli, Alexandre and Hettling, Hannes and Condamine, Fabien L. and Vos, Karin and Nilsson, R. Henrik and Sanderson, Michael J. and Sauquet, Herv{\'{e}} and Scharn, Ruud and Silvestro, Daniele and T{\"{o}}pel, Mats and Bacon, Christine D. and Oxelman, Bengt and Vos, Rutger A.},
+	doi = {10.1093/sysbio/syw066},
+	issn = {1076836X},
+	journal = {Systematic Biology},
+	keywords = {Bayesian phylogenetics,Data mining,Divide-and-conquer methods,GenBank,Multilocus multispecies coalescent,Next-generation sequencing,Palms,Primates,Tree calibration},
+	mendeley-groups = {DBTree},
+	month = {sep},
+	number = {2},
+	pages = {153--166},
+	title = {{Toward a self-updating platform for estimating rates of speciation and migration, ages, and relationships of Taxa}},
+	url = {https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syw066},
+	volume = {66},
+	year = {2017}
+}
+
+@techreport{Vos:2017,
+	author = {Vos, Rutger A},
+	doi = {10.6084/m9.figshare.4524569.v1},
+	file = {::},
+	mendeley-groups = {DBTree},
+	title = {{Design Patterns in Phylogenetics: Practical Tree Data Structures and Objects for Serialization}},
+	url = {http://evolution.genetics.washington.edu/phylip/software.html},
+	year = {2017}
+}
+
+@article{Piel:2018,
+	abstract = {Over the last 20 years, TreeBASE has acquired a substantial body of phylogenetic data, including more than 20,000 published phylogenies. Given latency issues and limited options when it comes to querying the database remotely, a simplified and consolidated version of the database, here called TreeBASEdmp, is made available for download, allowing biologists to design custom analyses of the data on their local computers. The database is indexed to support searching for phylogenetic topologies using nested sets and closure tables. Here we propose a new approach to find broadly-defined phylogenetic patterns, a method we call Generic Topological Querying, which allows the user to find hypotheses of relationship without being constrained to use particular sets of specific taxa. Additionally, we normalize as many leaf nodes as possible to an equivalent species rank identifier to assist in supertree synthesis. Our example script rapidly assembles sets of trees and generates a matrix representation of them for subsequent supertree generation.},
+	author = {Piel, William H and Vos, Rutger A},
+	doi = {10.1101/399030},
+	journal = {bioRxiv},
+	keywords = {000 published phylogenies,a simplified and,abstract,and limited options when,given latency issues,including more than 20,it comes to querying,over the last 20,phylogenetic data,phylogenetic querying,phyloinformatics,sql,substantial body of,supertree,the database remotely,treebase,treebase has acquired a,years},
+	mendeley-groups = {DBTree},
+	pages = {399030},
+	title = {{TreeBASEdmp: A Toolkit for Phyloinformatic Research}},
+	url = {https://www.biorxiv.org/content/early/2018/08/29/399030},
+	year = {2018}
+}
+
+@article{VosHettling:2017,
+	abstract = {Motivation Phylogenetic analysis is a broad and expanding field that requires versatile programming toolkits to manage the various data types, file formats, and needs for scalability, simulation, visualization, and data exploration. Results We present version 2.0 of the Bio::Phylo libraries for phylogenetic data analysis. This new release represents a rewrite of the architecture, allowing for extensions that improve speed and persistence, as well as increased functionality in terms of analysis, data reading and writing, and visualization. Availability The package is released as open source software under the same terms as Perl itself and available from the comprehensive Perl archive network as well as directly from the source code repository. Contact rutger.vos{\{}at{\}}naturalis.nl Supplementary information Supplementary data are available as doi:10.5281/zenodo.1039210},
+	author = {Vos, Rutger A. and Hettling, Hannes},
+	doi = {10.1101/211334},
+	journal = {bioRxiv},
+	mendeley-groups = {DBTree},
+	pages = {211334},
+	publisher = {Cold Spring Harbor Laboratory},
+	title = {{The Bio::Phylo libraries for phylogenetic data analysis, version 2.0}},
+	url = {https://www.biorxiv.org/content/10.1101/211334v2},
+	year = {2017}
+}
+
+

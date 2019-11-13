@@ -64,9 +64,10 @@ these trees appear vary somewhat. Sometimes, a tree is published
 as a 'one off' estimate needed for testing a hypothesis in a phylogenetic 
 comparative framework [e.g. @Zanne:2014]. In other cases, the tree 
 demonstrates the capabilities of initiatives to produce megatrees 
-[e.g. @Hinchliff:2015; @Smith:2018]. In yet other cases, the trees are 
-provided as snapshots of the diversity contained in a database 
-[e.g. @vanOven:2009; @Kirby:2016; @Federhen:2012; @DeSantis:2006]. 
+[e.g. @Mctavish:2015; @Redelings:2017; @Rees:2017; @Hinchliff:2015; 
+@Smith:2018; @Antonelli:2017]. In yet other cases, the trees are provided 
+as snapshots of the diversity contained in a database 
+[e.g. @vanOven:2009; @Kirby:2016; @Federhen:2012; @DeSantis:2006; @Piel:2018]. 
 
 All these trees coming publicly available is a wonderful development. 
 However, the format in which they are published is not always convenient 
@@ -79,7 +80,7 @@ to parse complex parenthetical tree descriptions and load some kind of
 graph structure or object into memory every time the script is run. With 
 large trees, this takes a lot of time and consumes a lot of working memory. 
 For example, loading the latest Open Tree of Life estimate 
-[v10.4, see @Hinchliff:2015] into DendroPy [@DendroPy] takes about 15 
+[v10.4, see @Hinchliff:2015] into DendroPy [@DendroPy] takes about 13 
 minutes and consumes over 8 GB of RAM. This might be fine for some use 
 cases (e.g. for processes that subsequently run for very long) but it can 
 be a limitation in other situations.
@@ -93,13 +94,14 @@ with this usage in mind, for example. In that case, and indeed in most
 cases where trees that might have polytomies are represented in databases, 
 the topology is captured using adjacency lists, where each database 
 record for a node (except the root) contains a reference to its parent 
-by way of a foreign key relation. The downside of this is that tree 
-traversal requires recursive queries: to get from a tip to the root, each 
-focal node along the path has to be visited in turn to look up the foreign 
-key relation to its parent. This is relatively slow. A possible solution 
-to this is to use relational database engines that compute transitive 
-closures, but not all commonly-used engines support those, and their 
-computation imposes additional computational cost on the ones that do.
+by way of a foreign key relation [e.g. see @Vos:2017]. The downside of 
+this is that tree traversal requires recursive queries: to get from a 
+tip to the root, each focal node along the path has to be visited in 
+turn to look up the foreign key relation to its parent. This is 
+relatively slow. A possible solution to this is to use relational 
+database engines that compute transitive closures, but not all 
+commonly-used engines support those, and their computation imposes 
+additional computational cost on the ones that do.
 
 Pre-computing certain metrics and topological indexes as column values 
 can obviate the need for some recursions entirely, speeding up topological 
@@ -213,11 +215,11 @@ As the database consists of a single table, mapping its structure onto
 an object-oriented class is straightforward. Many programming languages have
 tools for this. Commonly-used examples are Hibernate for Java, SQLAlchemy for 
 Python, and DBIx::Class for Perl, which I used. I then modified the generated 
-code so that it inherits from a tree node class of Bio::Phylo [@Vos:2011], 
-providing it with the additional functionality of this package (e.g. export to 
-various flat file formats; tree visualization). Infeasibly large phylogenies 
-can thus be programmed like any other tree object that Bio::Phylo operates on,
-provided a database is populated with them. 
+code so that it inherits from a tree node class of Bio::Phylo 
+[@Vos:2011; @VosHettling:2017], providing it with the additional functionality 
+of this package (e.g. export to various flat file formats; tree visualization). 
+Infeasibly large phylogenies can thus be programmed like any other tree object 
+that Bio::Phylo operates on, provided a database is populated with them. 
 
 ## Populating databases
 
@@ -335,6 +337,17 @@ The scripts are:
 - `megatree-phylotree-loader` - PhyloTree parser/loader 
 - `megatree-pruner` - extracts subtrees from a database
 
+All library code and scripts are made available under the same terms as perl itself,
+i.e. a combination of the Artistic License and the GPL v3.0. The entire package
+can be installed from the Comprehensive Perl Archive Network using the standard
+package manager by issuing the command `cpanm Bio::Phylo::Forest::DBTree`. Each
+script has a detailed help message that can be accessed by passing the `--help`
+(or `-h`) flag to the script, and longer documentation that can be accessed using
+`--man` (`-m`). The documentation of the library code (i.e. the re-usable 
+application programming interface or API) is written using the embedded documentation
+syntax POD, which can be viewed by issuing the command `perldoc <class name>`, e.g.
+`perldoc Bio::Phylo::Forest::DBTree`.
+
 Applying the loader scripts to the trees listed in the Methods resulted in 
 databases that can be queried in SQL (e.g. in the SQLite shell, a 3rd 
 party database browser, or from a scripting environment via a database handle) 
@@ -351,7 +364,10 @@ DBTree about a second. For small subtrees ($\leqslant$ 640 tips), the DBTree
 implementation returned results in less than 10 seconds where it took 
 DendroPy over 13 minutes; for the largest subtree (40,960 tips), DendroPy took 
 over an hour longer to complete than DBTree (~69 minutes vs. ~138 minutes).
-
+This is not to suggest that there are performance issues with DendroPy per se,
+which is a very well written, popular, and highly regarded toolkit, but simply
+to demonstrate the general problem with processing very large Newick strings
+and loading entire trees in memory.
 
 # Discussion
 
@@ -416,6 +432,10 @@ the following locations:
 | Green Genes       | [@DeSantis:2006]  | 10.6084/m9.figshare.4620214 |
 | ALLMB             | [@Smith:2018]     | 10.6084/m9.figshare.9747638 |
 | Open Tree of Life | [@Hinchliff:2015] | 10.6084/m9.figshare.9750509 |
+
+The benchmarking results, including shell scripts that demonstrate the 
+invocation of the tree pruner are available as a data package under DOI
+10.6084/m9.figshare.10273940
 
 \newpage
 
