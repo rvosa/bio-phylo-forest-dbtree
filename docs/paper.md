@@ -59,70 +59,59 @@ object-relational mapping
 
 # Introduction
 
-Larger and larger phylogenies are being published. The contexts in which 
-these trees appear vary somewhat. Sometimes, a tree is published 
-as a 'one off' estimate needed for testing a hypothesis in a phylogenetic 
-comparative framework [e.g. @Zanne:2014]. In other cases, the tree 
-demonstrates the capabilities of initiatives to produce megatrees 
-[e.g. @Mctavish:2015; @Redelings:2017; @Rees:2017; @Hinchliff:2015; 
-@Smith:2018; @Antonelli:2017]. In yet other cases, the trees are provided 
-as snapshots of the diversity contained in a database 
+Larger and larger phylogenies are being published. Sometimes, this is
+as a 'one off' estimate needed for testing a comparative hypothesis 
+[e.g. @Zanne:2014]. In other cases, to demonstrate the capabilities of 
+initiatives to produce megatrees [e.g. @Mctavish:2015; @Redelings:2017; 
+@Rees:2017; @Hinchliff:2015; @Smith:2018; @Antonelli:2017]. In yet other 
+cases, the trees are provided as snapshots of a database 
 [e.g. @vanOven:2009; @Kirby:2016; @Federhen:2012; @DeSantis:2006; @Piel:2018]. 
 
-All these trees coming publicly available is a wonderful development. 
-However, the format in which they are published is not always convenient 
-for reuse. Most commonly, large phylogenetic trees are made available 
-in Newick format [@Newick], as other formats [e.g. @Nexus; @NeXML] 
-are too verbose. From this perspective of conciseness, Newick is a 
-sensible choice. However, the researcher-programmer who wants to reuse 
-such large trees in a scripting environment is then faced with the need 
-to parse complex parenthetical tree descriptions and load some kind of 
-graph structure or object into memory every time the script is run. With 
-large trees, this takes a lot of time and consumes a lot of working memory. 
-For example, loading the latest Open Tree of Life estimate 
-[v10.4, see @Hinchliff:2015] into DendroPy [@DendroPy] takes about 13 
+These trees being published is a wonderful development. However, the format 
+in which they are shared may be inconvenient for reuse. Large phylogenetic 
+trees are usually made available in Newick format [@Newick], as other formats 
+[e.g. @Nexus; @NeXML] are too verbose. From this perspective of conciseness, 
+Newick is a sensible choice. However, the researcher-programmer wanting to reuse 
+data in a scripting environment then needs to parse complex parenthetical tree 
+descriptions and load some kind of graph structure or object into memory every 
+time the script is run. With large trees, this takes a lot of time and consumes 
+a lot of working memory. For example, loading the Open Tree of Life estimate 
+[v10.4, see @Hinchliff:2015] into DendroPy [@DendroPy] takes ~13 
 minutes and consumes over 8 GB of RAM. This might be fine for some use 
-cases (e.g. for processes that subsequently run for very long) but it can 
+cases (e.g. when subsequent processes runs for very long anyway) but it can 
 be a limitation in other situations.
 
-An alternative approach is to ingest a large tree into a portable, 
-on-disk database as a one-time operation, and then access the tree
-through a database handle. No more recurrent, complex text parsing, and 
-the tree does not have to be loaded into memory to query its topology. 
-The NCBI taxonomy [@Federhen:2012] is distributed as database tables 
-with this usage in mind, for example. In that case, and indeed in most 
-cases where trees that might have polytomies are represented in databases, 
-the topology is captured using adjacency lists, where each database 
-record for a node (except the root) contains a reference to its parent 
-by way of a foreign key relation [e.g. see @Vos:2017]. The downside of 
-this is that tree traversal requires recursive queries: to get from a 
-tip to the root, each focal node along the path has to be visited in 
-turn to look up the foreign key relation to its parent. This is 
-relatively slow. A possible solution to this is to use relational 
-database engines that compute transitive closures, but not all 
-commonly-used engines support those, and their computation imposes 
-additional computational cost on the ones that do.
+An alternative approach is to ingest large trees into portable, on-disk databases 
+as a one-time operation, and then access them through a database handle. No more 
+recurrent, complex text parsing, and trees do not have to be loaded into memory 
+for topological queries. The NCBI taxonomy [@Federhen:2012] is distributed as 
+database tables with this usage in mind, for example. In most cases where trees 
+with polytomies are represented in databases, the topology is captured using 
+adjacency lists, where each database record for a node (except the root) 
+references its parent using a foreign key [e.g. see @Vos:2017]. The downside of 
+this is that tree traversal becomes recursive: to get from a tip to the root, each 
+node along the path has to be visited to look up the foreign key to its parent. 
+This is relatively slow. A solution to this may be to use  database engines that 
+compute transitive closures, but not all engines support those, and their computation 
+imposes additional cost on the ones that do.
 
-Pre-computing certain metrics and topological indexes as column values 
-can obviate the need for some recursions entirely, speeding up topological 
-queries significantly. The general idea is illustrated in Fig 1. The 
-topology shown is represented in the table, with one record for each 
-node, by way of the following columns:
+Pre-computing certain metrics and topological indexes as column values can obviate 
+the need for some recursions, speeding up topological queries significantly. The 
+general idea is illustrated in Fig 1. The topology shown is represented in the table, 
+with one record for each node, by way of the following columns:
 
-- **name** - the node label. The values in this column correspond to those 
-  in the tree.
+- **name** - the node label as it appears in the tree.
 - **length** - the branch length.
 - **id** - a primary key, generated as an autoincrementing integer.
-- **parent** - a foreign key, whose value references the primary key
-  of the parent node.
-- **left** - an index generated as an autoincrementing integer in a 
+- **parent** - a foreign key referenceing the primary key of the parent.
+- **left** - an index generated as an autoincrementing integer in
   pre-order traversal: moving from root to tips, parent nodes are 
-  assigned the index before their child nodes.
+  assigned the index before their children.
 - **right** - an index generated as an autoincrementing integer in a 
   post-order traversal: moving from root to tips, child nodes are 
   assigned the index before their parents. That is, "on the way back"
   in the recursion.
-- **height** - the node height, i.e. the distance from the root.
+- **height** - cumulative distance from the root.
 
 In relational database implementations of trees that use adjacency list
 of this form, the children of _n1_ can be selected like so (returning 
@@ -134,11 +123,10 @@ select CHILD.* from node as PARENT, node as CHILD
   and PARENT.id==CHILD.parent;
 ```
 
-The inverse, getting the parent for an input node, should be readily 
-apparent. Beyond direct adjacency, traversals that would otherwise require 
-recursion can be executed as a single query with the aid of the additional 
-indexes. For example, to identify the most recent common ancestor _MRCA_ 
-of input nodes _C_ and _F_, we can formulate:
+The opposite, getting the parent of the input, should be readily apparent. 
+Beyond direct adjacency, traversals that are normally recursive can be executed 
+as single queries using the additional indexes. For example, to identify the 
+most recent common ancestor _MRCA_ of nodes _C_ and _F_, we can formulate:
 
 ```sql
 select MRCA.* from node as MRCA, node as C, node as F 
@@ -150,13 +138,12 @@ select MRCA.* from node as MRCA, node as C, node as F
 
 The query selects all nodes whose **left** index is lower, and whose 
 **right** index is higher than that of either of the input nodes. This
-limits the result set to those nodes that are ancestral to both. By then
-ordering these on the **left** index in descending order they are ranked
-from most recent to oldest. Limiting the result set to only the first
-record in this ordered list returns _MRCA_. Variations on this query to 
-obtain, for example, all ancestors or descendants of input nodes follow 
-similar logic. The precomputed node heights can be exploited, for example, 
-to compute patristic distances between nodes, such as:
+limits the results to nodes that are ancestral to both. By ordering these 
+on the **left** index in descending order they are ranked from most recent 
+to oldest. Limiting the results to the first record in this list returns 
+_MRCA_. Variations on this query to obtain all ancestors or descendants of 
+input nodes follow similar logic. The precomputed node heights can then be 
+used to compute patristic distances between nodes, such as:
 
 ```sql
 select (C.height-MRCA.height)+(F.height-MRCA.height) 
@@ -371,26 +358,26 @@ and loading entire trees in memory.
 
 # Discussion
 
-The concepts, tools and data files presented here are intended to make life 
-easier for researchers in computational biology. I would therefore like to
+The concepts, tools and data presented here are intended to make life 
+easier for researchers in computational biology. I would therefore 
 reassure the reader that there is no need to dust off any lingering knowledge 
 of SQL or Perl to be able to take advantage of the outcomes of this study. 
-The databases produced in this study can be navigated conveniently in R by 
-accessing them as data frames and processing them with `dbplyr` and related 
-tools. I provide an R Markdown document on the git repository (see Data 
-Availability) that provides a simple run through of how to operate on the 
-databases, showing how to extract clades, MRCAs, and pairwise distances. 
+The databases presented here can be navigated in R by accessing them as data 
+frames and processing them with `dbplyr` and related tools. I provide an R 
+Markdown document on the git repository (see Data Availability) that provides 
+a run through of how to operate on the databases, showing how to extract 
+clades, MRCAs, and pairwise distances. 
 
-For programming languages where object-relational mapping is a more common, 
-mature technique, the schema and databases presented here may form the basis 
+For programming languages where object-relational mapping is a common technique, 
+the schema and databases presented here may form the basis 
 for extending the functionality of some popular toolkits. For example, 
 generating a mapping for Python results in a tiny SQLAlchemy class that, 
-thanks to Python's multiple inheritance model, might subclass DendroPy's tree 
-node model, thus making persistently databased trees accessible through the 
+thanks to Python's multiple inheritance model, can subclass DendroPy's tree 
+node model, making persistently databased trees accessible through the 
 same programming interface as memory resident trees. I invite authors of 
 libraries that could take advantage of this to consider this possibility.
 
-The performance of the subtree extraction is such that this very common
+The performance of the subtree extraction is such that this common
 operation is much easier supported on DBTree-indexed trees than on Newick 
 tree files. The implication of this is twofold: i) projects that release 
 very large phylogenies periodically - such as the Open Tree of Life project -
