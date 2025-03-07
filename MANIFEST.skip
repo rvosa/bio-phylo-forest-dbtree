@@ -6,3 +6,4 @@ MANIFEST.skip
 MYMETA.*
 .gitignore
 docs/*
+.idea/*
