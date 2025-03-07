@@ -53,11 +53,15 @@ Installation
 
 The following installation instructions describe three different ways to install the
 package. Unless you know what you are doing, the first way is probably the best one.
-Under any circumstance, it is probably a good idea to familiarize yourself with the
-capabilities of the [cpanm][9] package manager as it offers many more possibilities 
-for controlling the installation (or for fetching, testing, uninstalling, etc.).
 
-### 1. From the Comprehensive Perl Archive Network (CPAN)
+### 1. From BioConda
+
+On many Linux-like operating systems as well as MacOSX, the entire installation completes
+with this single command:
+
+    conda install -c bioconda perl-bio-phylo-forest-dbtree
+
+### 2. From the Comprehensive Perl Archive Network (CPAN)
 
 On many Linux-like operating systems as well as MacOSX, the entire installation completes
 with this single command:
@@ -69,7 +73,7 @@ with this single command:
 - **Disadvantages** - you will likely get code that is a lot older than the latest work
   on this package.
 
-### 2. From GitHub
+### 3. From GitHub
 
 On many Linux-like operating systems as well as MacOSX, you can install the latest code
 from the [repository][8] with this single command:
@@ -81,7 +85,7 @@ from the [repository][8] with this single command:
 - **Disadvantages** - you will install untested, recent code, which might include new bugs 
   or other features, in your system folders.
 
-### 3. From an archive snapshot
+### 4. From an archive snapshot
 
 This is the approach you might take if you want complete control over the installation,
 and/or if there is a specific archive (such as zenodo release [10.5281/zenodo.1035856][7])
