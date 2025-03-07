@@ -9,4 +9,3 @@ docs/*
 .idea/*
 bold.db
 bold.db-journal
-Makefile
