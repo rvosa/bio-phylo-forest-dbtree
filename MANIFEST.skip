@@ -4,3 +4,5 @@ data/*
 .git/*
 MANIFEST.skip
 MYMETA.*
+.gitignore
+docs/*
