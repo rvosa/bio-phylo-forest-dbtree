@@ -1,7 +1,0 @@
-language: perl
-perl:
-  - "5.26"
-before_install:
-  - cpanm Bio::Phylo
-  - cpanm DBIx::Class
-  - cpanm DBD::SQLite
