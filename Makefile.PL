@@ -9,6 +9,7 @@ my %parms = (
     'EXE_FILES'    => [
         'script/megatree-loader',
         'script/megatree-ncbi-loader',
+        'script/megatree-bold-loader',
         'script/megatree-phylotree-loader',
         'script/megatree-pruner'
     ],
