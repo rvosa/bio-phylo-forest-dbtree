@@ -7,3 +7,5 @@ MYMETA.*
 .gitignore
 docs/*
 .idea/*
+bold.db
+bold.db-journal
